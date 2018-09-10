@@ -1,0 +1,37 @@
+version: 2
+
+test: &test
+  steps:
+    - checkout
+    - run:
+        name: install python dependencies
+        command: pip install -r dev-requirements.txt
+    - run:
+        name: run pytest
+        command: pytest
+
+
+jobs:
+  test-3.7:
+    docker:
+      - image: "python:3.7-stretch"
+    <<: *test
+
+  test-3.6:
+    docker:
+      - image: "python:3.6-stretch"
+    <<: *test
+
+  test-3.5:
+    docker:
+      - image: "python:3.5-stretch"
+    <<: *test
+
+
+workflows:
+  version: 2
+  spellcheck_test:
+    jobs:
+      - test-3.5
+      - test-3.6
+      - test-3.7
