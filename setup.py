@@ -1,8 +1,6 @@
 import setuptools
 
-requires = [
-    "flake8 > 3.0.0",
-]
+requires = ["flake8 > 3.0.0"]
 
 setuptools.setup(
     name="flake8-spellcheck",
@@ -13,16 +11,10 @@ setuptools.setup(
     author_email="michaelaquilina@gmail.com",
     url="https://gitlab.com/MichaelAquilina/flake8-spellcheck",
     install_requires=requires,
-    entry_points={
-        "flake8.extension": [
-            'SP = flake8_spellcheck:SpellCheckPlugin',
-        ],
-    },
+    entry_points={"flake8.extension": ["SP = flake8_spellcheck:SpellCheckPlugin"]},
     packages=setuptools.find_packages("src"),
-    package_dir={'': 'src'},
-    package_data={
-        'flake8_spellcheck': ['words.txt'],
-    },
+    package_dir={"": "src"},
+    package_data={"flake8_spellcheck": ["words.txt"]},
     classifiers=[
         "Framework :: Flake8",
         "Environment :: Console",

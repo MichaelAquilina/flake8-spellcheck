@@ -28,6 +28,11 @@ jobs:
             pip install .
             flake8
       - run:
+          name: black
+          command: |
+            pip install black
+            black . --check
+      - run:
           name: yamllint
           command: |
             pip install yamllint
