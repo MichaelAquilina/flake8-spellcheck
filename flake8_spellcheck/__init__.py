@@ -34,7 +34,7 @@ def parse_snake_case(name, col_offset):
 
 class SpellCheckPlugin(object):
     name = "flake8-spellcheck"
-    version = "0.2.5"
+    version = "0.3.0"
 
     def __init__(self, tree, *args, **kwargs):
         self.tree = tree
@@ -84,6 +84,6 @@ class SpellCheckPlugin(object):
                     yield (
                         node.lineno,
                         index,
-                        "SP1 Possibly misspelt word: '{}'".format(token),
+                        "SC100 Possibly misspelt word: '{}'".format(token),
                         type(self),
                     )

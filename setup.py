@@ -13,7 +13,7 @@ setuptools.setup(
     author_email="michaelaquilina@gmail.com",
     url="https://github.com/MichaelAquilina/flake8-spellcheck",
     install_requires=requires,
-    entry_points={"flake8.extension": ["SP = flake8_spellcheck:SpellCheckPlugin"]},
+    entry_points={"flake8.extension": ["SC = flake8_spellcheck:SpellCheckPlugin"]},
     packages=setuptools.find_packages("."),
     package_data={"flake8_spellcheck": ["*.txt"]},
     classifiers=[
