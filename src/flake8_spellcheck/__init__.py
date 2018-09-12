@@ -9,20 +9,24 @@ import pkg_resources
 
 
 def parse_camel_case(name, col_offset):
+    index = col_offset
     buffer = ""
     for c in name:
         if c in ascii_lowercase:
             buffer += c
         elif c in ascii_uppercase:
             if buffer:
-                yield buffer, col_offset
+                yield index - len(buffer), buffer
             buffer = c
+        index += 1
 
 
 def parse_snake_case(name, col_offset):
+    index = col_offset
     for token in name.split("_"):
-        yield token, col_offset
-        col_offset += len(token) + 1
+        if token:
+            yield index, token
+        index += len(token) + 1
 
 
 class SpellCheckPlugin(object):
@@ -59,19 +63,23 @@ class SpellCheckPlugin(object):
     def run(self):
         for node in ast.walk(self.tree):
             if isinstance(node, ast.ClassDef):
-                tokens = parse_camel_case(node.name, node.col_offset)
+                tokens = parse_camel_case(node.name, node.col_offset + len("class "))
             elif isinstance(node, ast.FunctionDef):
-                tokens = parse_snake_case(node.name, node.col_offset)
+                tokens = parse_snake_case(node.name, node.col_offset + len("def "))
+            elif isinstance(node, ast.AsyncFunctionDef):
+                tokens = parse_snake_case(
+                    node.name, node.col_offset + len("async def ")
+                )
             elif isinstance(node, ast.Name):
                 tokens = parse_snake_case(node.id, node.col_offset)
             else:
                 continue
 
-            for t, col_offset in tokens:
-                if t.lower() not in self.words:
+            for index, token in tokens:
+                if token.lower() not in self.words:
                     yield (
                         node.lineno,
-                        col_offset,
-                        "SP1 Unknown word: '{}'".format(t),
+                        index,
+                        "SP1 Unknown word: '{}'".format(token),
                         type(self),
                     )

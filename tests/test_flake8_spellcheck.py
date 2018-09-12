@@ -1,5 +1,21 @@
 # -*- coding: utf-8 -*-
 
+import pytest
+
+from flake8_spellcheck import parse_snake_case
+
+
+@pytest.mark.parametrize(
+    ["value", "col_offset", "tokens"],
+    [
+        ("bad_function", 0, [(0, "bad"), (4, "function")]),
+        ("foo_bar_baz", 4, [(4, "foo"), (8, "bar"), (12, "baz")]),
+        ("__init__", 3, [(5, "init")]),
+    ],
+)
+def test_parse_snake_case(value, col_offset, tokens):
+    assert list(parse_snake_case(value, col_offset)) == tokens
+
 
 class TestFunctionDef:
     def test_fail(self, flake8dir):
@@ -10,7 +26,7 @@ class TestFunctionDef:
         """
         )
         result = flake8dir.run_flake8()
-        assert result.out_lines == ["./example.py:1:1: SP1 Unknown word: 'mispleled'"]
+        assert result.out_lines == ["./example.py:1:5: SP1 Unknown word: 'mispleled'"]
 
     def test_pass(self, flake8dir):
         flake8dir.make_example_py(
@@ -50,14 +66,14 @@ class TestClassDef:
     def test_fail(self, flake8dir):
         flake8dir.make_example_py(
             """
-            class FackeClaessName:
-                pass
+        class FackeClaessName:
+            pass
         """
         )
         result = flake8dir.run_flake8()
         assert result.out_lines == [
-            "./example.py:1:1: SP1 Unknown word: 'Facke'",
-            "./example.py:1:1: SP1 Unknown word: 'Claess'",
+            "./example.py:1:7: SP1 Unknown word: 'Facke'",
+            "./example.py:1:12: SP1 Unknown word: 'Claess'",
         ]
 
     def test_pass(self, flake8dir):
