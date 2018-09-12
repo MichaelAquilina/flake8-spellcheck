@@ -1,11 +1,13 @@
 import setuptools
 
+from flake8_spellcheck import SpellCheckPlugin
+
 requires = ["flake8 > 3.0.0"]
 
 setuptools.setup(
     name="flake8-spellcheck",
     license="MIT",
-    version="0.2.3",
+    version=SpellCheckPlugin.version,
     description="Spellcheck variables, comments and docstrings",
     author="Michael Aquilina",
     author_email="michaelaquilina@gmail.com",
