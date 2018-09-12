@@ -20,6 +20,9 @@ def parse_camel_case(name, col_offset):
             buffer = c
         index += 1
 
+    if buffer:
+        yield index - len(buffer), buffer
+
 
 def parse_snake_case(name, col_offset):
     index = col_offset

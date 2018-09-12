@@ -2,7 +2,7 @@
 
 import pytest
 
-from flake8_spellcheck import parse_snake_case
+from flake8_spellcheck import parse_camel_case, parse_snake_case
 
 
 @pytest.mark.parametrize(
@@ -15,6 +15,17 @@ from flake8_spellcheck import parse_snake_case
 )
 def test_parse_snake_case(value, col_offset, tokens):
     assert list(parse_snake_case(value, col_offset)) == tokens
+
+
+@pytest.mark.parametrize(
+    ["value", "col_offset", "tokens"],
+    [
+        ("FakeClass", 0, [(0, "Fake"), (4, "Class")]),
+        ("FooBarBaz", 4, [(4, "Foo"), (7, "Bar"), (10, "Baz")]),
+    ],
+)
+def test_parse_camel_case(value, col_offset, tokens):
+    assert list(parse_camel_case(value, col_offset)) == tokens
 
 
 class TestFunctionDef:
