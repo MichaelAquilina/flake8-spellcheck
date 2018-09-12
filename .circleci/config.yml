@@ -9,6 +9,9 @@ test: &test
         name: install python dependencies
         command: pip install -r dev-requirements.txt
     - run:
+        name: install self
+        command: pip install .
+    - run:
         name: run pytest
         command: pytest
 
