@@ -41,7 +41,7 @@ class SpellCheckPlugin(object):
 
         self.words = set()
         for dictionary in ("words.txt", "python.txt"):
-            data = pkg_resources.resource_string(__name__, "words.txt")
+            data = pkg_resources.resource_string(__name__, dictionary)
             data = data.decode("utf8")
             self.words |= set(w.lower() for w in data.split("\n"))
 
