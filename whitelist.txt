@@ -3,3 +3,5 @@ ast
 isinstance
 fp
 setuptools
+classmethod
+cls

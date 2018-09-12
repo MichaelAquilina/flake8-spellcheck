@@ -36,12 +36,24 @@ class SpellCheckPlugin(object):
 
         self.words = set(w.lower() for w in data.split("\n"))
 
-        if os.path.exists("whitelist.txt"):
-            with open("whitelist.txt", "r") as fp:
+        if os.path.exists(self.whitelist_path):
+            with open(self.whitelist_path, "r") as fp:
                 whitelist = fp.read()
 
             whitelist = set(w.lower() for w in whitelist.split("\n"))
             self.words |= whitelist
+
+    @classmethod
+    def add_options(cls, parser):
+        parser.add_option(
+            "--whitelist",
+            help="Path to text file containing whitelisted words",
+            default="whitelist.txt",
+        )
+
+    @classmethod
+    def parse_options(cls, options):
+        cls.whitelist_path = options.whitelist
 
     def run(self):
         for node in ast.walk(self.tree):
