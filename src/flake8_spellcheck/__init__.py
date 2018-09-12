@@ -3,8 +3,9 @@ from __future__ import print_function
 
 import ast
 import os
-import pkg_resources
 from string import ascii_lowercase, ascii_uppercase
+
+import pkg_resources
 
 
 def parse_camel_case(name, col_offset):

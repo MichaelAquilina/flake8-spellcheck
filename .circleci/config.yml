@@ -28,6 +28,11 @@ jobs:
             pip install .
             flake8
       - run:
+          name: isort
+          command: |
+            pip install isort
+            isort --diff
+      - run:
           name: black
           command: |
             pip install black
