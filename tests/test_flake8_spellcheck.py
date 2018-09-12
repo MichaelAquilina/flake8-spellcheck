@@ -29,11 +29,13 @@ def test_parse_camel_case(value, col_offset, tokens):
 
 
 def test_python_words(flake8dir):
-    flake8dir.make_example_py("""
+    flake8dir.make_example_py(
+        """
         id = str(4)
         if isinstance(id, int):
             dict(id=id)
-    """)
+    """
+    )
     result = flake8dir.run_flake8()
     assert result.out_lines == []
 
