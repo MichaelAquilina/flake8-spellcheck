@@ -1,3 +1,5 @@
+---
+
 version: 2
 
 test: &test
@@ -18,13 +20,15 @@ jobs:
     steps:
       - checkout
       - run:
-          name: install flake8
+          name: flake8
           command: |
-            pip install flake8
             pip install .
+            flake8
       - run:
-          name: flake8 lint
-          command: flake8
+          name: yamllint
+          command: |
+            pip install yamllint
+            yamllint .
 
   test-3.7:
     docker:
