@@ -11,3 +11,11 @@ deepcopy
 urljoin
 isinstance
 dict
+urlparse
+urlencode
+datetime
+isoformat
+uwsgi
+wsgi
+namedtuple
+frozenset
