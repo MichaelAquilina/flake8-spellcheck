@@ -10,9 +10,7 @@ class TestFunctionDef:
         """
         )
         result = flake8dir.run_flake8()
-        assert result.out_lines == [
-            "./example.py:1:1: SP1 Unknown word: 'mispleled'",
-        ]
+        assert result.out_lines == ["./example.py:1:1: SP1 Unknown word: 'mispleled'"]
 
     def test_pass(self, flake8dir):
         flake8dir.make_example_py(
