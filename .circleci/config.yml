@@ -12,6 +12,20 @@ test: &test
 
 
 jobs:
+  lint:
+    docker:
+      - image: "python:3.7-stretch"
+    steps:
+      - checkout
+      - run:
+          name: install flake8
+          command: |
+            pip install flake8
+            pip install .
+      - run:
+          name: flake8 lint
+          command: flake8
+
   test-3.7:
     docker:
       - image: "python:3.7-stretch"
@@ -32,6 +46,7 @@ workflows:
   version: 2
   spellcheck_test:
     jobs:
+      - lint
       - test-3.5
       - test-3.6
       - test-3.7
