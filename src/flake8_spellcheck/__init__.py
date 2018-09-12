@@ -7,7 +7,7 @@ import pkg_resources
 from string import ascii_lowercase, ascii_uppercase
 
 
-def split_class_def(name, col_offset):
+def parse_camel_case(name, col_offset):
     buffer = ""
     for c in name:
         if c in ascii_lowercase:
@@ -18,7 +18,7 @@ def split_class_def(name, col_offset):
             buffer = c
 
 
-def split_name_def(name, col_offset):
+def parse_snake_case(name, col_offset):
     for token in name.split("_"):
         yield token, col_offset
         col_offset += len(token) + 1
@@ -58,9 +58,9 @@ class SpellCheckPlugin(object):
     def run(self):
         for node in ast.walk(self.tree):
             if isinstance(node, ast.ClassDef):
-                tokens = split_class_def(node.name, node.col_offset)
+                tokens = parse_camel_case(node.name, node.col_offset)
             elif isinstance(node, ast.Name):
-                tokens = split_name_def(node.id, node.col_offset)
+                tokens = parse_snake_case(node.id, node.col_offset)
             else:
                 continue
 
