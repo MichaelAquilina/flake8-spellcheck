@@ -34,7 +34,7 @@ def parse_snake_case(name, col_offset):
 
 class SpellCheckPlugin(object):
     name = "flake8-spellcheck"
-    version = "0.2.4"
+    version = "0.2.5"
 
     def __init__(self, tree, *args, **kwargs):
         self.tree = tree

@@ -14,8 +14,7 @@ setuptools.setup(
     url="https://github.com/MichaelAquilina/flake8-spellcheck",
     install_requires=requires,
     entry_points={"flake8.extension": ["SP = flake8_spellcheck:SpellCheckPlugin"]},
-    packages=setuptools.find_packages("src"),
-    package_dir={"": "src"},
+    packages=setuptools.find_packages("."),
     package_data={"flake8_spellcheck": ["*.txt"]},
     classifiers=[
         "Framework :: Flake8",
