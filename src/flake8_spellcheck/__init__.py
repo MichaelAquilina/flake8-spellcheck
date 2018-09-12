@@ -59,6 +59,8 @@ class SpellCheckPlugin(object):
         for node in ast.walk(self.tree):
             if isinstance(node, ast.ClassDef):
                 tokens = parse_camel_case(node.name, node.col_offset)
+            elif isinstance(node, ast.FunctionDef):
+                tokens = parse_snake_case(node.name, node.col_offset)
             elif isinstance(node, ast.Name):
                 tokens = parse_snake_case(node.id, node.col_offset)
             else:

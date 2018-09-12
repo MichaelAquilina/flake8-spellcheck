@@ -5,3 +5,4 @@ fp
 setuptools
 classmethod
 cls
+init
