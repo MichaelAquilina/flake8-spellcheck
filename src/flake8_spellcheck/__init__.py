@@ -2,6 +2,7 @@
 from __future__ import print_function
 
 import ast
+import os
 import pkg_resources
 from string import ascii_lowercase, ascii_uppercase
 
@@ -34,6 +35,13 @@ class SpellCheckPlugin(object):
         data = data.decode("utf8")
 
         self.words = set(w.lower() for w in data.split("\n"))
+
+        if os.path.exists("whitelist.txt"):
+            with open("whitelist.txt", "r") as fp:
+                whitelist = fp.read()
+
+            whitelist = set(w.lower() for w in whitelist.split("\n"))
+            self.words |= whitelist
 
     def run(self):
         for node in ast.walk(self.tree):
