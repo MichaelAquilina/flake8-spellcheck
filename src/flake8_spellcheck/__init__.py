@@ -23,7 +23,6 @@ def split_name_def(name, col_offset):
         col_offset += len(token) + 1
 
 
-
 class SpellCheckPlugin(object):
     name = "flake8-spellcheck"
     version = "0.1.0"
@@ -31,9 +30,8 @@ class SpellCheckPlugin(object):
     def __init__(self, tree, *args, **kwargs):
         self.tree = tree
 
-        # TODO: this can definitely be simplified
-        with open(pkg_resources.resource_filename(__name__, "words.txt"), "r") as fp:
-            data = fp.read()
+        data = pkg_resources.resource_string(__name__, "words.txt")
+        data = data.decode("utf8")
 
         self.words = set(w.lower() for w in data.split("\n"))
 
