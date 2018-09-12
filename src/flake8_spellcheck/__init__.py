@@ -34,15 +34,16 @@ def parse_snake_case(name, col_offset):
 
 class SpellCheckPlugin(object):
     name = "flake8-spellcheck"
-    version = "0.1.0"
+    version = "0.2.0a"
 
     def __init__(self, tree, *args, **kwargs):
         self.tree = tree
 
-        data = pkg_resources.resource_string(__name__, "words.txt")
-        data = data.decode("utf8")
-
-        self.words = set(w.lower() for w in data.split("\n"))
+        self.words = set()
+        for dictionary in ("words.txt", "python.txt"):
+            data = pkg_resources.resource_string(__name__, "words.txt")
+            data = data.decode("utf8")
+            self.words |= set(w.lower() for w in data.split("\n"))
 
         if os.path.exists(self.whitelist_path):
             with open(self.whitelist_path, "r") as fp:
@@ -83,6 +84,6 @@ class SpellCheckPlugin(object):
                     yield (
                         node.lineno,
                         index,
-                        "SP1 Unknown word: '{}'".format(token),
+                        "SP1 Possibly misspelt word: '{}'".format(token),
                         type(self),
                     )

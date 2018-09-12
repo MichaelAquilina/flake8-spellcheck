@@ -5,7 +5,7 @@ requires = ["flake8 > 3.0.0"]
 setuptools.setup(
     name="flake8-spellcheck",
     license="MIT",
-    version="0.1.0",
+    version="0.2.0a",
     description="Spellcheck variables, comments and docstrings",
     author="Michael Aquilina",
     author_email="michaelaquilina@gmail.com",
@@ -14,7 +14,7 @@ setuptools.setup(
     entry_points={"flake8.extension": ["SP = flake8_spellcheck:SpellCheckPlugin"]},
     packages=setuptools.find_packages("src"),
     package_dir={"": "src"},
-    package_data={"flake8_spellcheck": ["words.txt"]},
+    package_data={"flake8_spellcheck": ["*.txt"]},
     classifiers=[
         "Framework :: Flake8",
         "Environment :: Console",

@@ -1,8 +1,1 @@
 flake8dir
-ast
-isinstance
-fp
-setuptools
-classmethod
-cls
-init
