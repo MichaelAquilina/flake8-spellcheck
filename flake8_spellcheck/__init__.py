@@ -2,6 +2,7 @@
 from __future__ import print_function
 
 import os
+import tokenize
 from string import ascii_lowercase, ascii_uppercase, digits
 
 import pkg_resources
@@ -73,14 +74,20 @@ class SpellCheckPlugin(object):
 
     def run(self):
         for token_info in self.file_tokens:
-            if token_info.type != 1:
+            if token_info.type == tokenize.NAME:
+                value = token_info.string
+            elif token_info.type == tokenize.COMMENT:
+                value = token_info.string.lstrip("#")
+            else:
                 continue
 
-            case = detect_case(token_info.string)
-            if case == "snake":
-                tokens = parse_snake_case(token_info.string, token_info.start[1])
-            elif case == "camel":
-                tokens = parse_camel_case(token_info.string, token_info.start[1])
+            tokens = []
+            for word in value.split(" "):
+                case = detect_case(word)
+                if case == "snake":
+                    tokens.extend(parse_snake_case(word, token_info.start[1]))
+                elif case == "camel":
+                    tokens.extend(parse_camel_case(word, token_info.start[1]))
 
             for index, token in tokens:
                 if token.lower() not in self.words:

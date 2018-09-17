@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-
 from flake8_spellcheck import parse_camel_case, parse_snake_case
 
 
@@ -38,6 +37,31 @@ def test_python_words(flake8dir):
     )
     result = flake8dir.run_flake8()
     assert result.out_lines == []
+
+
+class TestComments:
+    def test_fail(self, flake8dir):
+        flake8dir.make_example_py(
+            """
+            # this is a b4d c8omm3nt
+            foo = "bar"
+        """
+        )
+        result = flake8dir.run_flake8()
+        assert result.out_lines == [
+            "./example.py:1:1: SC100 Possibly misspelt word: 'b4d'",
+            "./example.py:1:1: SC100 Possibly misspelt word: 'c8omm3nt'",
+        ]
+
+    def test_pass(self, flake8dir):
+        flake8dir.make_example_py(
+            """
+            # this is a bad comment
+            foo = "bar"
+        """
+        )
+        result = flake8dir.run_flake8()
+        assert result.out_lines == []
 
 
 class TestFunctionDef:
