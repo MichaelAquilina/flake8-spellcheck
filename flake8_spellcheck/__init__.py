@@ -20,12 +20,12 @@ def parse_camel_case(name, col_offset):
     index = col_offset
     buffer = ""
     for c in name:
-        if c in ascii_lowercase or c in digits:
-            buffer += c
-        elif c in ascii_uppercase:
+        if c in ascii_uppercase:
             if buffer:
                 yield index - len(buffer), buffer
             buffer = c
+        else:
+            buffer += c
         index += 1
 
     if buffer:
