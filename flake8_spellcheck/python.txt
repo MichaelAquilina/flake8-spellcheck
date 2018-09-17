@@ -17,6 +17,7 @@ isinstance
 isinstance
 isoformat
 kwargs
+lstrip
 namedtuple
 py
 pytest
@@ -25,5 +26,7 @@ str
 urlencode
 urljoin
 urlparse
+utf8
+utf-8
 uwsgi
 wsgi
