@@ -58,7 +58,7 @@ def is_number(value):
 
 class SpellCheckPlugin(object):
     name = "flake8-spellcheck"
-    version = "0.4.1"
+    version = "0.4.2"
 
     def __init__(self, tree, filename="(none)", file_tokens=None):
         self.file_tokens = file_tokens
