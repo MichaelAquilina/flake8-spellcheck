@@ -31,8 +31,8 @@ itertools
 json
 kwargs
 lstrip
-namedtuple
 maxsize
+namedtuple
 pragma
 py
 pytest
