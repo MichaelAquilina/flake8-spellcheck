@@ -26,14 +26,17 @@ init
 int
 isinstance
 isoformat
+issubclass
 itertools
 json
 kwargs
 lstrip
 namedtuple
+maxsize
 pragma
 py
 pytest
+qsl
 setuptools
 startswith
 str
