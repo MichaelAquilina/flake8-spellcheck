@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-from flake8_spellcheck import parse_camel_case, parse_snake_case
+from flake8_spellcheck import is_number, parse_camel_case, parse_snake_case
 
 
 @pytest.mark.parametrize(
@@ -27,6 +27,11 @@ def test_parse_snake_case(value, col_offset, tokens):
 )
 def test_parse_camel_case(value, col_offset, tokens):
     assert list(parse_camel_case(value, col_offset)) == tokens
+
+
+@pytest.mark.parametrize(["value", "result"], [("8", True), ("word8", False)])
+def test_is_number(value, result):
+    assert is_number(value) is result
 
 
 def test_python_words(flake8dir):

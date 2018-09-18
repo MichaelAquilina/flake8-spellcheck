@@ -3,7 +3,7 @@ from __future__ import print_function
 
 import os
 import tokenize
-from string import ascii_uppercase, ascii_lowercase, digits
+from string import ascii_lowercase, ascii_uppercase, digits
 
 import pkg_resources
 
@@ -45,6 +45,15 @@ def parse_snake_case(name, col_offset):
         if token:
             yield index, token
         index += len(token) + 1
+
+
+def is_number(value):
+    try:
+        float(value)
+    except ValueError:
+        return False
+    else:
+        return True
 
 
 class SpellCheckPlugin(object):
@@ -99,7 +108,7 @@ class SpellCheckPlugin(object):
                     tokens.extend(parse_camel_case(word, token_info.start[1]))
 
             for index, token in tokens:
-                if token.lower() not in self.words:
+                if token.lower() not in self.words and not is_number(token):
                     yield (
                         token_info.start[0],
                         index,
