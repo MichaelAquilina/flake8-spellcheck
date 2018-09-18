@@ -25,7 +25,6 @@ gettext
 init
 int
 isinstance
-isinstance
 isoformat
 itertools
 json
