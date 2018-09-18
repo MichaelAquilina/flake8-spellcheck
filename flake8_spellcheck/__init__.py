@@ -3,7 +3,7 @@ from __future__ import print_function
 
 import os
 import tokenize
-from string import ascii_lowercase, ascii_uppercase, digits
+from string import ascii_uppercase
 
 import pkg_resources
 
