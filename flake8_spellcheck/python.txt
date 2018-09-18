@@ -27,7 +27,7 @@ str
 urlencode
 urljoin
 urlparse
-utf-8
+utf
 utf8
 uwsgi
 wsgi

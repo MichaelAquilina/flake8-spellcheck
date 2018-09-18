@@ -20,6 +20,8 @@ def test_parse_snake_case(value, col_offset, tokens):
     ["value", "col_offset", "tokens"],
     [
         ("FakeClass", 0, [(0, "Fake"), (4, "Class")]),
+        ("coding:", 10, [(10, "coding")]),
+        ("pair-programming", 0, [(0, "pair"), (5, "programming")]),
         ("FooBarBaz", 4, [(4, "Foo"), (7, "Bar"), (10, "Baz")]),
     ],
 )
