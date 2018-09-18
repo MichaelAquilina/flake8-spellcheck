@@ -23,6 +23,7 @@ def parse_camel_case(name, col_offset):
     start = index
     buffer = ""
     for c in name:
+        index += 1
         if c in ascii_lowercase or c in digits:
             buffer += c
         else:
@@ -30,13 +31,13 @@ def parse_camel_case(name, col_offset):
                 yield start, buffer
             if c in ascii_uppercase:
                 buffer = c
+                start = index - 1
             else:
                 buffer = ""
-            start = index
-        index += 1
+                start = index
 
     if buffer:
-        yield index - len(buffer), buffer
+        yield start, buffer
 
 
 def parse_snake_case(name, col_offset):
