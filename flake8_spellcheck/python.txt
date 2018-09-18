@@ -1,4 +1,5 @@
 Iterable
+abspath
 args
 ast
 async
@@ -33,6 +34,7 @@ kwargs
 lstrip
 maxsize
 namedtuple
+netloc
 pragma
 py
 pytest
