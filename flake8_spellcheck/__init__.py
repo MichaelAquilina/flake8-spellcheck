@@ -42,10 +42,21 @@ def parse_camel_case(name, col_offset):
 
 def parse_snake_case(name, col_offset):
     index = col_offset
-    for token in name.split("_"):
-        if token:
-            yield index, token
-        index += len(token) + 1
+    start = index
+    buffer = ""
+    for c in name:
+        index += 1
+        if c in ascii_lowercase or c in digits or c in ascii_lowercase:
+            buffer += c
+        else:
+            if buffer:
+                yield start, buffer
+
+            buffer = ""
+            start = index
+
+    if buffer:
+        yield start, buffer
 
 
 def is_number(value):
