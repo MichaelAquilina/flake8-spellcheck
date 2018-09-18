@@ -22,6 +22,7 @@ namedtuple
 py
 pytest
 setuptools
+startswith
 str
 urlencode
 urljoin

@@ -3,14 +3,16 @@ from __future__ import print_function
 
 import os
 import tokenize
-from string import ascii_uppercase
+from string import ascii_uppercase, ascii_lowercase, digits
 
 import pkg_resources
 
 
 # Really simple detection function
 def detect_case(name):
-    if "_" in name:
+    if name.startswith("http"):
+        return "url"
+    elif "_" in name:
         return "snake"
     else:
         return "camel"
@@ -20,12 +22,12 @@ def parse_camel_case(name, col_offset):
     index = col_offset
     buffer = ""
     for c in name:
-        if c in ascii_uppercase:
+        if c in ascii_lowercase or c in digits:
+            buffer += c
+        elif c in ascii_uppercase:
             if buffer:
                 yield index - len(buffer), buffer
             buffer = c
-        else:
-            buffer += c
         index += 1
 
     if buffer:
@@ -84,7 +86,9 @@ class SpellCheckPlugin(object):
             tokens = []
             for word in value.split(" "):
                 case = detect_case(word)
-                if case == "snake":
+                if case == "url":
+                    tokens.append((word, token_info.start[1]))
+                elif case == "snake":
                     tokens.extend(parse_snake_case(word, token_info.start[1]))
                 elif case == "camel":
                     tokens.extend(parse_camel_case(word, token_info.start[1]))
