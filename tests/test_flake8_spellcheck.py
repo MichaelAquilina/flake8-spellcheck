@@ -21,6 +21,7 @@ def test_parse_snake_case(value, col_offset, tokens):
     ["value", "col_offset", "tokens"],
     [
         ("FakeClass", 0, [(0, "Fake"), (4, "Class")]),
+        ("don't", 0, [(0, "don't")]),
         ("coding:", 10, [(10, "coding")]),
         ("`FastCar`", 22, [(23, "Fast"), (27, "Car")]),
         ("pair-programming", 0, [(0, "pair"), (5, "programming")]),
