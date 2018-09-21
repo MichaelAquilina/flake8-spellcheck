@@ -33,6 +33,7 @@ json
 kwargs
 lstrip
 maxsize
+mypy
 namedtuple
 netloc
 pragma

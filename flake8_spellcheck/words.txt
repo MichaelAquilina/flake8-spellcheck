@@ -73816,6 +73816,7 @@ lewdness's
 lexer
 lexers
 lexical
+lexically
 lexicographer
 lexicographer's
 lexicographers
@@ -84378,6 +84379,7 @@ onus
 onus's
 onuses
 onward
+onwards
 onya
 onyas
 onyx
@@ -91869,6 +91871,7 @@ prayerfully
 prayers
 praying
 prays
+pre
 preach
 preached
 preacher
@@ -120892,6 +120895,7 @@ unseen
 unseen's
 unsegmented
 unsegregated
+unselected
 unselfish
 unselfishly
 unselfishness
