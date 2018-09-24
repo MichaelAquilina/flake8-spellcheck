@@ -88,6 +88,9 @@ class SpellCheckPlugin(object):
             whitelist = set(w.lower() for w in whitelist.split("\n"))
             self.words |= whitelist
 
+        # Hacky way of getting dictionary with symbols stripped
+        self.no_symbols = set(w.replace("'", "") for w in self.words)
+
     @classmethod
     def add_options(cls, parser):
         parser.add_option(
@@ -121,7 +124,16 @@ class SpellCheckPlugin(object):
                     tokens.extend(parse_camel_case(word, token_info.start[1]))
 
             for index, token in tokens:
-                if token.lower() not in self.words and not is_number(token):
+
+                if token_info.type == tokenize.NAME:
+                    valid = token.lower() in self.no_symbols
+                elif token_info.type == tokenize.COMMENT:
+                    valid = token.lower() in self.words
+                else:
+                    raise ValueError("Unknown state")
+
+                # Need a way of matching words without symbols
+                if not valid and not is_number(token):
                     yield (
                         token_info.start[0],
                         index,
