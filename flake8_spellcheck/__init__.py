@@ -18,8 +18,8 @@ def detect_case(name):
         return "camel"
 
 
-def parse_camel_case(name, col_offset):
-    index = col_offset
+def parse_camel_case(name, pos):
+    index = pos[1]
     start = index
     buffer = ""
     for c in name:
@@ -28,7 +28,7 @@ def parse_camel_case(name, col_offset):
             buffer += c
         else:
             if buffer:
-                yield start, buffer
+                yield (pos[0], start), buffer
             if c in ascii_uppercase:
                 buffer = c
                 start = index - 1
@@ -37,11 +37,11 @@ def parse_camel_case(name, col_offset):
                 start = index
 
     if buffer:
-        yield start, buffer
+        yield (pos[0], start), buffer
 
 
-def parse_snake_case(name, col_offset):
-    index = col_offset
+def parse_snake_case(name, pos):
+    index = pos[1]
     start = index
     buffer = ""
     for c in name:
@@ -50,13 +50,13 @@ def parse_snake_case(name, col_offset):
             buffer += c
         else:
             if buffer:
-                yield start, buffer
+                yield (pos[0], start), buffer
 
             buffer = ""
             start = index
 
     if buffer:
-        yield start, buffer
+        yield (pos[0], start), buffer
 
 
 def is_number(value):
@@ -88,6 +88,9 @@ class SpellCheckPlugin(object):
             whitelist = set(w.lower() for w in whitelist.split("\n"))
             self.words |= whitelist
 
+        # Hacky way of getting dictionary with symbols stripped
+        self.no_symbols = set(w.replace("'", "") for w in self.words)
+
     @classmethod
     def add_options(cls, parser):
         parser.add_option(
@@ -99,6 +102,22 @@ class SpellCheckPlugin(object):
     @classmethod
     def parse_options(cls, options):
         cls.whitelist_path = options.whitelist
+
+    def _detect_errors(self, tokens, use_symbols):
+        for pos, token in tokens:
+            if use_symbols:
+                valid = token.lower() in self.words
+            else:
+                valid = token.lower() in self.no_symbols
+
+            # Need a way of matching words without symbols
+            if not valid and not is_number(token):
+                yield (
+                    pos[0],
+                    pos[1],
+                    "SC100 Possibly misspelt word: '{}'".format(token),
+                    type(self),
+                )
 
     def run(self):
         for token_info in self.file_tokens:
@@ -116,15 +135,13 @@ class SpellCheckPlugin(object):
                     # Nothing to do here
                     continue
                 elif case == "snake":
-                    tokens.extend(parse_snake_case(word, token_info.start[1]))
+                    tokens.extend(parse_snake_case(word, token_info.start))
                 elif case == "camel":
-                    tokens.extend(parse_camel_case(word, token_info.start[1]))
+                    tokens.extend(parse_camel_case(word, token_info.start))
 
-            for index, token in tokens:
-                if token.lower() not in self.words and not is_number(token):
-                    yield (
-                        token_info.start[0],
-                        index,
-                        "SC100 Possibly misspelt word: '{}'".format(token),
-                        type(self),
-                    )
+            if token_info.type == tokenize.NAME:
+                use_symbols = False
+            elif token_info.type == tokenize.COMMENT:
+                use_symbols = True
+
+            yield from self._detect_errors(tokens, use_symbols)
