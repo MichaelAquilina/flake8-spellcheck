@@ -103,6 +103,22 @@ class SpellCheckPlugin(object):
     def parse_options(cls, options):
         cls.whitelist_path = options.whitelist
 
+    def _detect_errors(self, tokens, line_number, symbols):
+        for index, token in tokens:
+            if symbols:
+                valid = token.lower() in self.words
+            else:
+                valid = token.lower() in self.no_symbols
+
+            # Need a way of matching words without symbols
+            if not valid and not is_number(token):
+                yield (
+                    line_number,
+                    index,
+                    "SC100 Possibly misspelt word: '{}'".format(token),
+                    type(self),
+                )
+
     def run(self):
         for token_info in self.file_tokens:
             if token_info.type == tokenize.NAME:
@@ -123,20 +139,9 @@ class SpellCheckPlugin(object):
                 elif case == "camel":
                     tokens.extend(parse_camel_case(word, token_info.start[1]))
 
-            for index, token in tokens:
+            if token_info.type == tokenize.NAME:
+                use_symbols = False
+            elif token_info.type == tokenize.COMMENT:
+                use_symbols = True
 
-                if token_info.type == tokenize.NAME:
-                    valid = token.lower() in self.no_symbols
-                elif token_info.type == tokenize.COMMENT:
-                    valid = token.lower() in self.words
-                else:
-                    raise ValueError("Unknown state")
-
-                # Need a way of matching words without symbols
-                if not valid and not is_number(token):
-                    yield (
-                        token_info.start[0],
-                        index,
-                        "SC100 Possibly misspelt word: '{}'".format(token),
-                        type(self),
-                    )
+            yield from self._detect_errors(tokens, token_info.start[0], use_symbols)
