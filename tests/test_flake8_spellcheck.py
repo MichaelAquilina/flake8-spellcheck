@@ -57,20 +57,21 @@ class TestComments:
     def test_fail(self, flake8dir):
         flake8dir.make_example_py(
             """
-            # this is a b4d c8omm3nt
+            # dont make b4d c8omm3nts
             foo = "bar"
         """
         )
         result = flake8dir.run_flake8()
         assert result.out_lines == [
+            "./example.py:1:1: SC100 Possibly misspelt word: 'dont'",
             "./example.py:1:1: SC100 Possibly misspelt word: 'b4d'",
-            "./example.py:1:1: SC100 Possibly misspelt word: 'c8omm3nt'",
+            "./example.py:1:1: SC100 Possibly misspelt word: 'c8omm3nts'",
         ]
 
     def test_pass(self, flake8dir):
         flake8dir.make_example_py(
             """
-            # this is a bad comment
+            # don't make bad comments
             foo = "bar"
         """
         )
