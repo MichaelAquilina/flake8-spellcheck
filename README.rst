@@ -4,7 +4,10 @@ Flake8 Spellcheck
 
 |CircleCI| |Black| |PyPi|
 
-Flake8 Plugin that spellchecks variables, functions, classess and other bits of your python code.
+Flake8 Plugin that spellchecks variables, functions, classes and other bits of your python code.
+
+You can whitelist words that are specific to your project simply by adding them to ``whitelist.txt``
+in the root of your project directory. Each word you add  should be separated by a newline.
 
 .. |CircleCI| image:: https://circleci.com/gh/MichaelAquilina/flake8-spellcheck.svg?style=svg
    :target: https://circleci.com/gh/MichaelAquilina/flake8-spellcheck
