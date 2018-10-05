@@ -68,6 +68,15 @@ def is_number(value):
         return True
 
 
+def get_code(token_type):
+    if token_type == tokenize.COMMENT:
+        return "SC100"
+    elif token_type == tokenize.NAME:
+        return "SC200"
+    else:
+        raise ValueError("Unknown token_type {}".format(token_type))
+
+
 class SpellCheckPlugin(object):
     name = "flake8-spellcheck"
     version = "0.6.0"
@@ -103,7 +112,9 @@ class SpellCheckPlugin(object):
     def parse_options(cls, options):
         cls.whitelist_path = options.whitelist
 
-    def _detect_errors(self, tokens, use_symbols):
+    def _detect_errors(self, tokens, use_symbols, token_type):
+        code = get_code(token_type)
+
         for pos, token in tokens:
             if use_symbols:
                 valid = token.lower() in self.words
@@ -115,7 +126,7 @@ class SpellCheckPlugin(object):
                 yield (
                     pos[0],
                     pos[1],
-                    "SC100 Possibly misspelt word: '{}'".format(token),
+                    "{} Possibly misspelt word: '{}'".format(code, token),
                     type(self),
                 )
 
@@ -144,4 +155,4 @@ class SpellCheckPlugin(object):
             elif token_info.type == tokenize.COMMENT:
                 use_symbols = True
 
-            yield from self._detect_errors(tokens, use_symbols)
+            yield from self._detect_errors(tokens, use_symbols, token_info.type)
