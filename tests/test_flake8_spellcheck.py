@@ -99,7 +99,7 @@ class TestFunctionDef:
         )
         result = flake8dir.run_flake8()
         assert result.out_lines == [
-            "./example.py:1:5: SC100 Possibly misspelt word: 'mispleled'"
+            "./example.py:1:5: SC200 Possibly misspelt word: 'mispleled'"
         ]
 
     def test_pass(self, flake8dir):
@@ -122,8 +122,8 @@ class TestName:
         )
         result = flake8dir.run_flake8()
         assert result.out_lines == [
-            "./example.py:1:4: SC100 Possibly misspelt word: 'varaible'",
-            "./example.py:1:13: SC100 Possibly misspelt word: 'namde'",
+            "./example.py:1:4: SC200 Possibly misspelt word: 'varaible'",
+            "./example.py:1:13: SC200 Possibly misspelt word: 'namde'",
         ]
 
     def test_pass(self, flake8dir):
@@ -146,8 +146,8 @@ class TestClassDef:
         )
         result = flake8dir.run_flake8()
         assert result.out_lines == [
-            "./example.py:1:7: SC100 Possibly misspelt word: 'Facke'",
-            "./example.py:1:12: SC100 Possibly misspelt word: 'Claess'",
+            "./example.py:1:7: SC200 Possibly misspelt word: 'Facke'",
+            "./example.py:1:12: SC200 Possibly misspelt word: 'Claess'",
         ]
 
     def test_pass(self, flake8dir):
