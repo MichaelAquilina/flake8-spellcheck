@@ -12,8 +12,8 @@ in the root of your project directory. Each word you add  should be separated by
 Codes
 -----
 
-SC100 - Spelling error in comments
-SC200 - Spelling error in name (e.g. variable, function, class)
+* SC100 - Spelling error in comments
+* SC200 - Spelling error in name (e.g. variable, function, class)
 
 .. |CircleCI| image:: https://circleci.com/gh/MichaelAquilina/flake8-spellcheck.svg?style=svg
    :target: https://circleci.com/gh/MichaelAquilina/flake8-spellcheck
