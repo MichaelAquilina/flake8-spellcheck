@@ -40,7 +40,7 @@ jobs:
       - run:
           name: check word dictionaries are sorted
           command: |
-            for file in "whitelist.txt" flake8_spellcheck/{words,python}.txt;
+            for file in "whitelist.txt" flake8_spellcheck/*.txt;
             do
               if [ "$(sort < "$file")" != "$(<"$file")" ]; then
                 echo "$file is not sorted correctly"
