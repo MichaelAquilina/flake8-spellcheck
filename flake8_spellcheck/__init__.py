@@ -106,6 +106,7 @@ class SpellCheckPlugin(object):
             "--whitelist",
             help="Path to text file containing whitelisted words",
             default="whitelist.txt",
+            parse_from_config=True,
         )
 
     @classmethod
