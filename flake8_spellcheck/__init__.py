@@ -24,7 +24,7 @@ def to_compat_token(tok):
 def detect_case(name):
     if name.startswith("http"):
         return "url"
-    elif "_" in name:
+    elif "_" in name[1:]:
         return "snake"
     else:
         return "camel"
