@@ -129,17 +129,21 @@ class SpellCheckPlugin(object):
         code = get_code(token_type)
 
         for pos, token in tokens:
+            value = token
             if use_symbols:
-                valid = token.lower() in self.words
+                if token_type == tokenize.COMMENT:
+                    # strip the word of surrounding quotes
+                    value = value.strip("'")
+                valid = value.lower() in self.words
             else:
-                valid = token.lower() in self.no_symbols
+                valid = value.lower() in self.no_symbols
 
             # Need a way of matching words without symbols
-            if not valid and not is_number(token):
+            if not valid and not is_number(value):
                 yield (
                     pos[0],
                     pos[1],
-                    "{} Possibly misspelt word: '{}'".format(code, token),
+                    "{} Possibly misspelt word: '{}'".format(code, value),
                     type(self),
                 )
 
