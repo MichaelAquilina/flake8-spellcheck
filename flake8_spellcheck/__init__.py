@@ -156,4 +156,5 @@ class SpellCheckPlugin(object):
             elif token_info.type == tokenize.COMMENT:
                 use_symbols = True
 
-            yield from self._detect_errors(tokens, use_symbols, token_info.type)
+            for error_tuple in self._detect_errors(tokens, use_symbols, token_info.type):
+                yield error_tuple
