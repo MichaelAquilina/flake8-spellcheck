@@ -58,6 +58,7 @@ class TestComments:
         flake8dir.make_example_py(
             """
             # dont make b4d c8omm3nts
+            # some 'quoted' words "shoul'd be" OK (also like `this`).
             foo = "bar"
         """
         )
@@ -66,12 +67,14 @@ class TestComments:
             "./example.py:1:1: SC100 Possibly misspelt word: 'dont'",
             "./example.py:1:1: SC100 Possibly misspelt word: 'b4d'",
             "./example.py:1:1: SC100 Possibly misspelt word: 'c8omm3nts'",
+            "./example.py:2:2: SC100 Possibly misspelt word: 'shoul'd'",
         ]
 
     def test_pass(self, flake8dir):
         flake8dir.make_example_py(
             """
             # don't make bad comments
+            # some 'quoted' words "should be" OK (also like `this`).
             foo = "bar"
         """
         )
