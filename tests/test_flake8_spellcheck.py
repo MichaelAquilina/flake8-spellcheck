@@ -30,6 +30,7 @@ def test_parse_snake_case(value, col_offset, tokens):
         ("`FastCar`", (1, 22), [((1, 23), "Fast"), ((1, 27), "Car")]),
         ("pair-programming", (5, 0), [((5, 0), "pair"), ((5, 5), "programming")]),
         ("FooBarBaz", (4, 4), [((4, 4), "Foo"), ((4, 7), "Bar"), ((4, 10), "Baz")]),
+        ("_ignoredValue", (20, 10), [((20, 11), "ignored"), ((20, 18), "Value")]),
     ],
 )
 def test_parse_camel_case(value, col_offset, tokens):
@@ -154,6 +155,30 @@ class TestClassDef:
         flake8dir.make_example_py(
             """
             class FakeClassName:
+                pass
+        """
+        )
+        result = flake8dir.run_flake8()
+        assert result.out_lines == []
+
+
+class TestLeadingUnderscore:
+    def test_fail(self, flake8dir):
+        flake8dir.make_example_py(
+            """
+            def _doSsomething(s):
+                pass
+        """
+        )
+        result = flake8dir.run_flake8()
+        assert result.out_lines == [
+            "./example.py:1:8: SC200 Possibly misspelt word: 'Ssomething'",
+        ]
+
+    def test_pass(self, flake8dir):
+        flake8dir.make_example_py(
+            """
+            def _doSomething(s):
                 pass
         """
         )
