@@ -118,18 +118,24 @@ class TestName:
         flake8dir.make_example_py(
             """
             my_varaible_namde = "something"
+            SOMETHIGN = "SOMETHING"
+            SOMETHING_ELS = "SOMETHING"
         """
         )
         result = flake8dir.run_flake8()
         assert result.out_lines == [
             "./example.py:1:4: SC200 Possibly misspelt word: 'varaible'",
             "./example.py:1:13: SC200 Possibly misspelt word: 'namde'",
+            "./example.py:2:1: SC200 Possibly misspelt word: 'SOMETHIGN'",
+            "./example.py:3:11: SC200 Possibly misspelt word: 'ELS'",
         ]
 
     def test_pass(self, flake8dir):
         flake8dir.make_example_py(
             """
             my_variable_name = "something"
+            SOMETHING = "SOMETHING"
+            SOMETHING_ELSE = "SOMETHING"
         """
         )
         result = flake8dir.run_flake8()
