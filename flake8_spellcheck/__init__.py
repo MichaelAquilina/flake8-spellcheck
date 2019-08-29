@@ -1,11 +1,23 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 
+import collections
 import os
 import tokenize
 from string import ascii_lowercase, ascii_uppercase, digits
 
 import pkg_resources
+
+
+# provides a compatibilty layer between tokens on Python2 (which are tuples), and Python3 (which are objects with the
+# field names as below).
+CompatToken = collections.namedtuple('CompatToken', ['type', 'string', 'start', 'end', 'line'])
+
+
+def to_compat_token(tok):
+    if isinstance(tok, tuple):
+        return CompatToken(*tok)
+    return tok
 
 
 # Really simple detection function
@@ -133,6 +145,7 @@ class SpellCheckPlugin(object):
 
     def run(self):
         for token_info in self.file_tokens:
+            token_info = to_compat_token(token_info)
             if token_info.type == tokenize.NAME:
                 value = token_info.string
             elif token_info.type == tokenize.COMMENT:
