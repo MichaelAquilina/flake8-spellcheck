@@ -26,6 +26,8 @@ def detect_case(name):
         return "url"
     elif "_" in name:
         return "snake"
+    elif name.isupper():
+        return "snake"
     else:
         return "camel"
 
@@ -58,7 +60,7 @@ def parse_snake_case(name, pos):
     buffer = ""
     for c in name:
         index += 1
-        if c in ascii_lowercase or c in digits or c in ascii_lowercase:
+        if c in ascii_lowercase or c in digits or c in ascii_uppercase:
             buffer += c
         else:
             if buffer:
