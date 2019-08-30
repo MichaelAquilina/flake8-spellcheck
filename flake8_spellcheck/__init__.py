@@ -24,7 +24,7 @@ def to_compat_token(tok):
 def detect_case(name):
     if name.startswith("http"):
         return "url"
-    elif "_" in name:
+    elif "_" in name.lstrip('_'):   # ignore leading underscores when testing for snake case
         return "snake"
     elif name.isupper():
         return "snake"
