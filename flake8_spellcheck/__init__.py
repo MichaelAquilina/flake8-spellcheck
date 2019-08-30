@@ -8,7 +8,6 @@ from string import ascii_lowercase, ascii_uppercase, digits
 
 import pkg_resources
 
-
 # provides a compatibility layer between tokens on Python2 (which are tuples), and Python3 (which are objects with the
 # field names as below).
 CompatToken = collections.namedtuple('CompatToken', ['type', 'string', 'start', 'end', 'line'])
