@@ -35,6 +35,7 @@ int
 isinstance
 isoformat
 issubclass
+isupper
 itertools
 json
 kwargs
@@ -48,6 +49,8 @@ namedtuple
 netloc
 pragma
 py
+python2
+python3
 pytest
 qsl
 repr

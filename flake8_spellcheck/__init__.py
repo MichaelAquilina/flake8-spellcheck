@@ -9,15 +9,15 @@ from string import ascii_lowercase, ascii_uppercase, digits
 import pkg_resources
 
 
-# provides a compatibilty layer between tokens on Python2 (which are tuples), and Python3 (which are objects with the
+# provides a compatibility layer between tokens on Python2 (which are tuples), and Python3 (which are objects with the
 # field names as below).
 CompatToken = collections.namedtuple('CompatToken', ['type', 'string', 'start', 'end', 'line'])
 
 
-def to_compat_token(tok):
-    if isinstance(tok, tuple):
-        return CompatToken(*tok)
-    return tok
+def to_compat_token(token):
+    if isinstance(token, tuple):
+        return CompatToken(*token)
+    return token
 
 
 # Really simple detection function
@@ -147,29 +147,32 @@ class SpellCheckPlugin(object):
 
     def run(self):
         for token_info in self.file_tokens:
-            token_info = to_compat_token(token_info)
-            if token_info.type == tokenize.NAME:
-                value = token_info.string
-            elif token_info.type == tokenize.COMMENT:
-                value = token_info.string.lstrip("#")
-            else:
+            yield from self._parse_token(token_info)
+
+    def _parse_token(self, token_info):
+        token_info = to_compat_token(token_info)
+        if token_info.type == tokenize.NAME:
+            value = token_info.string
+        elif token_info.type == tokenize.COMMENT:
+            value = token_info.string.lstrip("#")
+        else:
+            return
+
+        tokens = []
+        for word in value.split(" "):
+            case = detect_case(word)
+            if case == "url":
+                # Nothing to do here
                 continue
+            elif case == "snake":
+                tokens.extend(parse_snake_case(word, token_info.start))
+            elif case == "camel":
+                tokens.extend(parse_camel_case(word, token_info.start))
 
-            tokens = []
-            for word in value.split(" "):
-                case = detect_case(word)
-                if case == "url":
-                    # Nothing to do here
-                    continue
-                elif case == "snake":
-                    tokens.extend(parse_snake_case(word, token_info.start))
-                elif case == "camel":
-                    tokens.extend(parse_camel_case(word, token_info.start))
+        if token_info.type == tokenize.NAME:
+            use_symbols = False
+        elif token_info.type == tokenize.COMMENT:
+            use_symbols = True
 
-            if token_info.type == tokenize.NAME:
-                use_symbols = False
-            elif token_info.type == tokenize.COMMENT:
-                use_symbols = True
-
-            for error_tuple in self._detect_errors(tokens, use_symbols, token_info.type):
-                yield error_tuple
+        for error_tuple in self._detect_errors(tokens, use_symbols, token_info.type):
+            yield error_tuple
