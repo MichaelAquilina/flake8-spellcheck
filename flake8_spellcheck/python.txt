@@ -49,9 +49,9 @@ namedtuple
 netloc
 pragma
 py
+pytest
 python2
 python3
-pytest
 qsl
 repr
 rmtree
