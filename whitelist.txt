@@ -1,3 +1,4 @@
+compat
 config
 flake8dir
 fp
@@ -5,4 +6,3 @@ hacky
 lineno
 parametrize
 tokenize
-Compat
