@@ -10,7 +10,9 @@ import pkg_resources
 
 # provides a compatibility layer between tokens on Python2 (which are tuples), and Python3 (which are objects with the
 # field names as below).
-CompatToken = collections.namedtuple('CompatToken', ['type', 'string', 'start', 'end', 'line'])
+CompatToken = collections.namedtuple(
+    "CompatToken", ["type", "string", "start", "end", "line"]
+)
 
 
 def to_compat_token(token):
@@ -23,7 +25,9 @@ def to_compat_token(token):
 def detect_case(name):
     if name.startswith("http"):
         return "url"
-    elif "_" in name.lstrip('_'):   # ignore leading underscores when testing for snake case
+    elif "_" in name.lstrip(
+        "_"
+    ):  # ignore leading underscores when testing for snake case
         return "snake"
     elif name.isupper():
         return "snake"

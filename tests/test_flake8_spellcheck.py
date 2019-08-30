@@ -178,7 +178,7 @@ class TestLeadingUnderscore:
         )
         result = flake8dir.run_flake8()
         assert result.out_lines == [
-            "./example.py:1:8: SC200 Possibly misspelt word: 'Ssomething'",
+            "./example.py:1:8: SC200 Possibly misspelt word: 'Ssomething'"
         ]
 
     def test_pass(self, flake8dir):
