@@ -96,7 +96,7 @@ def get_code(token_type):
 
 class SpellCheckPlugin(object):
     name = "flake8-spellcheck"
-    version = "0.9.0"
+    version = "0.9.1"
 
     def __init__(self, tree, filename="(none)", file_tokens=None):
         self.file_tokens = file_tokens
