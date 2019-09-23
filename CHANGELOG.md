@@ -1,6 +1,10 @@
 Flake8 Spellcheck Changelog
 ===========================
 
+0.9.1
+-----
+* Add `hasattr` to in-built python dictionary
+
 0.9.0
 -----
 * Introduce Changelog
