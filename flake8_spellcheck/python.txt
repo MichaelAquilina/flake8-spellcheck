@@ -30,6 +30,7 @@ getcwd
 getenv
 getpass
 gettext
+hasattr
 init
 int
 isinstance
