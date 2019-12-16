@@ -1,6 +1,10 @@
 Flake8 Spellcheck Changelog
 ===========================
 
+0.10.0
+------
+* Handle special cases when spellchecking words ending with 's
+
 0.9.1
 -----
 * Add `hasattr` to in-built python dictionary
