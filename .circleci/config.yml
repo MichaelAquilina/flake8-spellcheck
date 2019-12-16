@@ -35,7 +35,7 @@ jobs:
       - run:
           name: black
           command: |
-            pip install black
+            pip install black==19.3b0
             black . --check
       - run:
           name: check word dictionaries are sorted
