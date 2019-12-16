@@ -18,8 +18,8 @@ def detect_case(name):
         return "camel"
 
 
-def parse_camel_case(name, pos):
-    index = pos[1]
+def parse_camel_case(name, position):
+    index = position[1]
     start = index
     buffer = ""
     for c in name:
@@ -28,7 +28,7 @@ def parse_camel_case(name, pos):
             buffer += c
         else:
             if buffer:
-                yield (pos[0], start), buffer
+                yield (position[0], start), buffer
             if c in ascii_uppercase:
                 buffer = c
                 start = index - 1
@@ -37,11 +37,11 @@ def parse_camel_case(name, pos):
                 start = index
 
     if buffer:
-        yield (pos[0], start), buffer
+        yield (position[0], start), buffer
 
 
-def parse_snake_case(name, pos):
-    index = pos[1]
+def parse_snake_case(name, position):
+    index = position[1]
     start = index
     buffer = ""
     for c in name:
@@ -50,13 +50,13 @@ def parse_snake_case(name, pos):
             buffer += c
         else:
             if buffer:
-                yield (pos[0], start), buffer
+                yield (position[0], start), buffer
 
             buffer = ""
             start = index
 
     if buffer:
-        yield (pos[0], start), buffer
+        yield (position[0], start), buffer
 
 
 def is_number(value):
@@ -121,7 +121,7 @@ class SpellCheckPlugin:
     def _detect_errors(self, tokens, use_symbols, token_type):
         code = get_code(token_type)
 
-        for pos, token in tokens:
+        for position, token in tokens:
             if use_symbols:
                 valid = token.lower() in self.words
             else:
@@ -130,8 +130,8 @@ class SpellCheckPlugin:
             # Need a way of matching words without symbols
             if not valid and not is_number(token):
                 yield (
-                    pos[0],
-                    pos[1],
+                    position[0],
+                    position[1],
                     "{} Possibly misspelt word: '{}'".format(code, token),
                     type(self),
                 )

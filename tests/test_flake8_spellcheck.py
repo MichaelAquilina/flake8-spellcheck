@@ -96,8 +96,6 @@ class TestFunctionDef:
         assert result.out_lines == []
 
     def test_apostrophe_ending_with_s(self, flake8dir):
-        # Words ending with 's usually refers to ownership and
-        # and should not be ignored (class's -> classs)
         flake8dir.make_example_py(
             """
             def request_classs(a, b, c):
