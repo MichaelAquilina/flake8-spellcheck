@@ -98,7 +98,12 @@ class SpellCheckPlugin:
             self.words |= whitelist
 
         # Hacky way of getting dictionary with symbols stripped
-        self.no_symbols = set(w.replace("'", "") for w in self.words)
+        self.no_symbols = set()
+        for w in self.words:
+            if w.endswith("'s"):
+                self.no_symbols.add(w.replace("'s", ""))
+            else:
+                self.no_symbols.add(w.replace("'", ""))
 
     @classmethod
     def add_options(cls, parser):

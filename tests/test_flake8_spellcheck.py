@@ -81,15 +81,33 @@ class TestComments:
 
 
 class TestFunctionDef:
-    def test_ignore_symbols(self, flake8dir):
+    def test_apostrophe(self, flake8dir):
         flake8dir.make_example_py(
             """
             def dont_fail(a):
                 return a + 2
+
+
+            def cant_fail(b):
+                return b * 4
         """
         )
         result = flake8dir.run_flake8()
         assert result.out_lines == []
+
+    def test_apostrophe_ending_with_s(self, flake8dir):
+        # Words ending with 's usually refers to ownership and
+        # and should not be ignored (class's -> classs)
+        flake8dir.make_example_py(
+            """
+            def request_classs(a, b, c):
+                pass
+        """
+        )
+        result = flake8dir.run_flake8()
+        assert result.out_lines == [
+            "./example.py:1:13: SC200 Possibly misspelt word: 'classs'"
+        ]
 
     def test_fail(self, flake8dir):
         flake8dir.make_example_py(
