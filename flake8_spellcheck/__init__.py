@@ -102,7 +102,7 @@ class SpellCheckPlugin(object):
         self.file_tokens = file_tokens
 
         self.words = set()
-        for dictionary in ("words.txt", "python.txt", "technical.txt"):
+        for dictionary in ("en_US.txt", "python.txt", "technical.txt"):
             data = pkg_resources.resource_string(__name__, dictionary)
             data = data.decode("utf8")
             self.words |= set(w.lower() for w in data.split("\n"))
