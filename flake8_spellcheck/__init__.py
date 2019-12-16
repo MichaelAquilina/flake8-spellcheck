@@ -1,24 +1,8 @@
-# -*- coding: utf-8 -*-
-from __future__ import print_function
-
-import collections
 import os
 import tokenize
 from string import ascii_lowercase, ascii_uppercase, digits
 
 import pkg_resources
-
-# provides a compatibility layer between tokens on Python2 (which are tuples), and Python3 (which are objects with the
-# field names as below).
-CompatToken = collections.namedtuple(
-    "CompatToken", ["type", "string", "start", "end", "line"]
-)
-
-
-def to_compat_token(token):
-    if isinstance(token, tuple):
-        return CompatToken(*token)
-    return token
 
 
 # Really simple detection function
@@ -93,7 +77,7 @@ def get_code(token_type):
         raise ValueError("Unknown token_type {}".format(token_type))
 
 
-class SpellCheckPlugin(object):
+class SpellCheckPlugin:
     name = "flake8-spellcheck"
     version = "0.9.1"
 
@@ -152,7 +136,6 @@ class SpellCheckPlugin(object):
             yield from self._parse_token(token_info)
 
     def _parse_token(self, token_info):
-        token_info = to_compat_token(token_info)
         if token_info.type == tokenize.NAME:
             value = token_info.string
         elif token_info.type == tokenize.COMMENT:
