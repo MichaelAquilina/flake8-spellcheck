@@ -63,6 +63,7 @@ class TestComments:
         """
         )
         result = flake8dir.run_flake8()
+        assert result.exit_code == 1
         assert result.out_lines == [
             "./example.py:1:1: SC100 Possibly misspelt word: 'dont'",
             "./example.py:1:1: SC100 Possibly misspelt word: 'b4d'",
@@ -93,6 +94,7 @@ class TestFunctionDef:
         """
         )
         result = flake8dir.run_flake8()
+        assert result.exit_code == 0
         assert result.out_lines == []
 
     def test_apostrophe_ending_with_s(self, flake8dir):
@@ -103,6 +105,7 @@ class TestFunctionDef:
         """
         )
         result = flake8dir.run_flake8()
+        assert result.exit_code == 1
         assert result.out_lines == [
             "./example.py:1:13: SC200 Possibly misspelt word: 'classs'"
         ]
@@ -115,6 +118,7 @@ class TestFunctionDef:
         """
         )
         result = flake8dir.run_flake8()
+        assert result.exit_code == 1
         assert result.out_lines == [
             "./example.py:1:5: SC200 Possibly misspelt word: 'mispleled'"
         ]
@@ -127,6 +131,7 @@ class TestFunctionDef:
         """
         )
         result = flake8dir.run_flake8()
+        assert result.exit_code == 0
         assert result.out_lines == []
 
 
@@ -140,6 +145,7 @@ class TestName:
         """
         )
         result = flake8dir.run_flake8()
+        assert result.exit_code == 1
         assert result.out_lines == [
             "./example.py:1:4: SC200 Possibly misspelt word: 'varaible'",
             "./example.py:1:13: SC200 Possibly misspelt word: 'namde'",
@@ -156,6 +162,7 @@ class TestName:
         """
         )
         result = flake8dir.run_flake8()
+        assert result.exit_code == 0
         assert result.out_lines == []
 
 
@@ -168,6 +175,7 @@ class TestClassDef:
         """
         )
         result = flake8dir.run_flake8()
+        assert result.exit_code == 1
         assert result.out_lines == [
             "./example.py:1:7: SC200 Possibly misspelt word: 'Facke'",
             "./example.py:1:12: SC200 Possibly misspelt word: 'Claess'",
@@ -193,6 +201,7 @@ class TestLeadingUnderscore:
         """
         )
         result = flake8dir.run_flake8()
+        assert result.exit_code == 1
         assert result.out_lines == [
             "./example.py:1:8: SC200 Possibly misspelt word: 'Ssomething'"
         ]
@@ -205,4 +214,5 @@ class TestLeadingUnderscore:
         """
         )
         result = flake8dir.run_flake8()
+        assert result.exit_code == 0
         assert result.out_lines == []
