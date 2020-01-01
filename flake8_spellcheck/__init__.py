@@ -79,13 +79,13 @@ def get_code(token_type):
 
 class SpellCheckPlugin:
     name = "flake8-spellcheck"
-    version = "0.10.0"
+    version = "0.11.0"
 
     def __init__(self, tree, filename="(none)", file_tokens=None):
         self.file_tokens = file_tokens
 
         self.words = set()
-        for dictionary in ("en_US.txt", "python.txt", "technical.txt"):
+        for dictionary in self.dictionaries:
             data = pkg_resources.resource_string(__name__, dictionary)
             data = data.decode("utf8")
             self.words |= set(w.lower() for w in data.split("\n"))
@@ -113,10 +113,19 @@ class SpellCheckPlugin:
             default="whitelist.txt",
             parse_from_config=True,
         )
+        parser.add_option(
+            "--dictionaries",
+            # Unfortunately optparse does not support nargs="+" so we
+            # need to use a command separated list to work round it
+            help="Command separated list of dictionaries to enable",
+            default="en_US,python,technical",
+            parse_from_config=True,
+        )
 
     @classmethod
     def parse_options(cls, options):
         cls.whitelist_path = options.whitelist
+        cls.dictionaries = [d + ".txt" for d in options.dictionaries.split(",")]
 
     def _detect_errors(self, tokens, use_symbols, token_type):
         code = get_code(token_type)

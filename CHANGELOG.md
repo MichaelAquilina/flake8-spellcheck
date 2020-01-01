@@ -1,6 +1,11 @@
 Flake8 Spellcheck Changelog
 ===========================
 
+0.11.0
+------
+* Add more words to python dictionary
+* Add initial support for optional in-built dictionaries (e.g. Django)
+
 0.10.0
 ------
 * Handle special cases when spellchecking words ending with 's
