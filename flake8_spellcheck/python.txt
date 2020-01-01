@@ -55,9 +55,9 @@ kwargs
 lstrip
 makedirs
 maxsize
+md5
 mimetype
 mimetypes
-md5
 mkdtemp
 mkstemp
 mypy
@@ -66,8 +66,8 @@ nargs
 netloc
 optparse
 pkgutil
-pragma
 pprint
+pragma
 py
 pytest
 python2
@@ -99,7 +99,7 @@ utcfromtimestamp
 utcnow
 utf
 utf8
-uwsgi
 uuid
 uuid4
+uwsgi
 wsgi
