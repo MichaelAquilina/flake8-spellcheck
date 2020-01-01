@@ -216,3 +216,41 @@ class TestLeadingUnderscore:
         result = flake8dir.run_flake8()
         assert result.exit_code == 0
         assert result.out_lines == []
+
+
+class TestOptionalDictionaries:
+    def test_fail(self, flake8dir):
+        flake8dir.make_example_py(
+            """
+            from django.http import HttpResponse
+            from django.views.decorators.csrf import csrf_protect
+
+
+            @csrf_protect
+            def my_view(request):
+                return HttpResponse("hello world")
+        """
+        )
+        result = flake8dir.run_flake8()
+        assert result.exit_code == 1
+        assert result.out_lines == [
+            "./example.py:2:30: SC200 Possibly misspelt word: 'csrf'",
+            "./example.py:2:42: SC200 Possibly misspelt word: 'csrf'",
+            "./example.py:5:2: SC200 Possibly misspelt word: 'csrf'",
+        ]
+
+    def test_success(self, flake8dir):
+        flake8dir.make_example_py(
+            """
+            from django.http import HttpResponse
+            from django.views.decorators.csrf import csrf_protect
+
+
+            @csrf_protect
+            def my_view(request):
+                return HttpResponse("hello world")
+        """
+        )
+        result = flake8dir.run_flake8(["--dictionaries=python,technical,django,en_US"])
+        assert result.exit_code == 0
+        assert result.out_lines == []

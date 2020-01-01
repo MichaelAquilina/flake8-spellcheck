@@ -62,7 +62,9 @@ mkdtemp
 mkstemp
 mypy
 namedtuple
+nargs
 netloc
+optparse
 pkgutil
 pragma
 pprint
