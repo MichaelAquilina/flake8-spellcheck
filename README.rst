@@ -19,6 +19,28 @@ Codes
 * SC100 - Spelling error in comments
 * SC200 - Spelling error in name (e.g. variable, function, class)
 
+Contributing
+------------
+
+If you have found word(s) which is listed as a spelling error but is actually a correct term used
+in python or in technical implementations (e.g. http), then you can very easily contribute by
+adding those word(s) to the appropriate dictionaries:
+
+* `python dictionary <flake8_spellcheck/python.txt>`_
+* `technical dictionary <flake8_spellcheck/technical.txt>`_
+* `django dictionary <flake8_spellcheck/django.txt>`_
+
+Enable initial Django support
+-----------------------------
+
+You can enable some initial support for a Django dictionary by adding the following to your
+flake8 configuration (e.g. your ``.flake8`` file):
+
+.. code-block:: ini
+
+    [flake8]
+    dictionaries=en_US,python,technical,django
+
 .. |CircleCI| image:: https://circleci.com/gh/MichaelAquilina/flake8-spellcheck.svg?style=svg
    :target: https://circleci.com/gh/MichaelAquilina/flake8-spellcheck
 
