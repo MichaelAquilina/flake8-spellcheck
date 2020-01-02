@@ -52,6 +52,10 @@ jobs:
           command: |
             pip install yamllint
             yamllint .
+  test-3.8:
+    docker:
+      - image: "python:3.7-stretch"
+    <<: *test
 
   test-3.7:
     docker:
@@ -77,3 +81,4 @@ workflows:
       - test-3.5
       - test-3.6
       - test-3.7
+      - test-3.8
