@@ -1,6 +1,3 @@
-csrf
-csrfmiddlewaretoken
-django
 accessor
 addr
 arg
@@ -9,7 +6,6 @@ att
 attname
 attr
 attrib
-attrs
 autodiscover
 b64decode
 b64encode
@@ -36,13 +32,12 @@ config
 configs
 const
 contenttypes
-contextlib
-contextmanager
 contrib
 copyfile
 creat
 crypto
 csrf
+cfsrfmiddlewaretoken
 ctypes
 curr
 cwd
@@ -83,7 +78,6 @@ fieldsets
 filelist
 fileobj
 filepath
-findall
 finditer
 fk
 fks
@@ -114,8 +108,6 @@ groupdict
 guid
 hasher
 hashers
-hashlib
-hexdigest
 hmac
 http404
 httponly
@@ -126,7 +118,6 @@ iexact
 ign
 ignorecase
 impl
-importlib
 incr
 initkwargs
 inlines
@@ -134,14 +125,11 @@ inv
 ips
 isabs
 isclass
-isdigit
-isdir
 isfile
 isnan
 isnull
 issubset
 itemgetter
-iter
 iteritems
 iterkeys
 itervalues
@@ -167,7 +155,6 @@ m2m
 matcher
 matchobj
 mcs
-md5
 mem
 metaclass
 metavar
@@ -180,7 +167,6 @@ monthrange
 mtime
 multiline
 namespace
-nargs
 ngettext
 nodelist
 normpath
@@ -206,7 +192,6 @@ popen
 popitem
 posixpath
 postgres
-pprint
 prefetch
 preload
 prepend
@@ -257,7 +242,6 @@ slugify
 smtp
 splitdrive
 splitext
-splitlines
 src
 staticfiles
 stdin
@@ -305,14 +289,12 @@ url2pathname
 urlconf
 urlopen
 urlsafe
-urlsplit
 urlunparse
 urlunsplit
 utcoffset
 util
 utils
 utime
-uuid
 validators
 ver
 viewitems
