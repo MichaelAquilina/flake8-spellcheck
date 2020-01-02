@@ -1,6 +1,11 @@
 Flake8 Spellcheck Changelog
 ===========================
 
+0.12.0
+------
+* Add more words to python dictionary
+* Fully support optional django dictionary
+
 0.11.0
 ------
 * Add more words to python dictionary

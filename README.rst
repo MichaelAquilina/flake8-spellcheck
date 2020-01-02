@@ -30,10 +30,10 @@ adding those word(s) to the appropriate dictionaries:
 * `technical dictionary <flake8_spellcheck/technical.txt>`_
 * `django dictionary <flake8_spellcheck/django.txt>`_
 
-Enable initial Django support
------------------------------
+Enable Django support
+---------------------
 
-You can enable some initial support for a Django dictionary by adding the following to your
+You can enable support for a Django dictionary by adding the following to your
 flake8 configuration (e.g. your ``.flake8`` file):
 
 .. code-block:: ini
