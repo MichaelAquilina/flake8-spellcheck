@@ -58,7 +58,7 @@ class TestComments:
     def test_fail(self, flake8dir):
         flake8dir.make_example_py(
             """
-            # dont make b4d c8omm3nts
+            # dont "make" b4d c8omm3nts
             foo = "bar"
         """
         )
@@ -73,7 +73,7 @@ class TestComments:
     def test_pass(self, flake8dir):
         flake8dir.make_example_py(
             """
-            # don't make bad comments
+            # don't "make" 'bad' comments
             foo = "bar"
         """
         )

@@ -132,10 +132,12 @@ class SpellCheckPlugin:
         code = get_code(token_type)
 
         for position, token in tokens:
+            test_token = token.lower().strip("'").strip('"')
+
             if use_symbols:
-                valid = token.lower() in self.words
+                valid = test_token in self.words
             else:
-                valid = token.lower() in self.no_symbols
+                valid = test_token in self.no_symbols
 
             # Need a way of matching words without symbols
             if not valid and not is_number(token):
