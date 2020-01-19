@@ -119,13 +119,14 @@ class SpellCheckPlugin:
             # need to use a command separated list to work round it
             help="Command separated list of dictionaries to enable",
             default="en_US,python,technical",
+            comma_separated_list=True,
             parse_from_config=True,
         )
 
     @classmethod
     def parse_options(cls, options):
         cls.whitelist_path = options.whitelist
-        cls.dictionaries = [d + ".txt" for d in options.dictionaries.split(",")]
+        cls.dictionaries = [d + ".txt" for d in options.dictionaries]
 
     def _detect_errors(self, tokens, use_symbols, token_type):
         code = get_code(token_type)
