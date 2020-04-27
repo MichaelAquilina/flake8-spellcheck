@@ -1,4 +1,3 @@
-Iterable
 abspath
 arg
 argparse
@@ -17,12 +16,14 @@ basename
 basestring
 bool
 builtins
+bytearray
 ceil
 chmod
 chr
 classmethod
 cls
 cmp
+configparser
 contextlib
 contextmanager
 ctypes
@@ -69,12 +70,15 @@ issubclass
 isupper
 itemgetter
 iter
+iterable
 iteritems
 itertools
 itervalues
 json
 kwarg
 kwargs
+libarchive
+lrange
 lstrip
 makedirs
 maxsize
@@ -90,6 +94,7 @@ mypy
 namedtuple
 nargs
 netloc
+optionxform
 optparse
 pkgutil
 posixpath
@@ -127,6 +132,7 @@ strptime
 struct
 subprocess
 sys
+tarfile
 tempfile
 timedelta
 traceback
@@ -149,3 +155,4 @@ uuid
 uuid4
 uwsgi
 wsgi
+yaml

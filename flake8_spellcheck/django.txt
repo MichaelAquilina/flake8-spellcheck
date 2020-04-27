@@ -24,6 +24,7 @@ contenttypes
 contrib
 copyfile
 creat
+crontab
 crypto
 csrf
 curr
@@ -40,6 +41,7 @@ dicts
 difflib
 dirname
 dirs
+djcache
 dom
 doseq
 dotall
@@ -56,6 +58,7 @@ exts
 failfast
 fcntl
 fdopen
+fetchall
 fetchone
 fieldname
 fieldsets
@@ -95,6 +98,7 @@ hmac
 http404
 httponly
 i18n
+icontains
 ident
 idx
 iexact
@@ -111,6 +115,7 @@ isfile
 isnan
 isnull
 issubset
+jsonb
 keepdb
 kernel32
 keyfile
