@@ -1,6 +1,10 @@
 Flake8 Spellcheck Changelog
 ===========================
 
+0.13.0
+------
+* Add more words to python, django and technical dictionaries (Thanks @pbelskiy)
+
 0.12.1
 ------
 * Fix bug where quotes in comments would result in spell errors

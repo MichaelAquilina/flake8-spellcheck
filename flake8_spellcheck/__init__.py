@@ -79,7 +79,7 @@ def get_code(token_type):
 
 class SpellCheckPlugin:
     name = "flake8-spellcheck"
-    version = "0.12.1"
+    version = "0.13.0"
 
     def __init__(self, tree, filename="(none)", file_tokens=None):
         self.file_tokens = file_tokens
