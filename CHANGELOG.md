@@ -1,6 +1,10 @@
 Flake8 Spellcheck Changelog
 ===========================
 
+0.14.0
+------
+* Add "hardcode" to technical.txt
+
 0.13.0
 ------
 * Add more words to python, django and technical dictionaries (Thanks @pbelskiy)
