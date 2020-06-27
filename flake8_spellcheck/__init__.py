@@ -166,6 +166,8 @@ class SpellCheckPlugin:
         elif (
             token_info.type == tokenize.COMMENT
             and "comments" in self.spellcheck_targets
+            # ignore flake8 pragma comments
+            and token_info.string.lstrip("#").split()[0] != "noqa:"
         ):
             value = token_info.string.lstrip("#")
         else:
