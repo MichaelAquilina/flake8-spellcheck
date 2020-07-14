@@ -19,6 +19,38 @@ Codes
 * SC100 - Spelling error in comments
 * SC200 - Spelling error in name (e.g. variable, function, class)
 
+Enable Django support
+---------------------
+
+You can enable support for a Django dictionary by adding the following to your
+flake8 configuration (e.g. your ``.flake8`` file):
+
+.. code-block:: ini
+
+    [flake8]
+    dictionaries=en_US,python,technical,django
+
+
+Specify Targets
+---------------
+
+Both ``comments`` and ``names`` (variable names, function names...) are spellchecked by default.
+You can specify what targets to spellcheck in your flake8 configuration (e.g. in your ``.flake8`` file):
+
+.. code-block:: ini
+
+   [flake8]
+   spellcheck-targets=comments
+
+The above configuration would only spellcheck comments
+
+.. code-block:: ini
+
+   [flake8]
+   spellcheck-targets=names
+
+The above configuration would only spellcheck names
+
 Contributing
 ------------
 
@@ -30,16 +62,6 @@ adding those word(s) to the appropriate dictionaries:
 * `technical dictionary <flake8_spellcheck/technical.txt>`_
 * `django dictionary <flake8_spellcheck/django.txt>`_
 
-Enable Django support
----------------------
-
-You can enable support for a Django dictionary by adding the following to your
-flake8 configuration (e.g. your ``.flake8`` file):
-
-.. code-block:: ini
-
-    [flake8]
-    dictionaries=en_US,python,technical,django
 
 .. |CircleCI| image:: https://circleci.com/gh/MichaelAquilina/flake8-spellcheck.svg?style=svg
    :target: https://circleci.com/gh/MichaelAquilina/flake8-spellcheck

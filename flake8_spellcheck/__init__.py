@@ -122,11 +122,19 @@ class SpellCheckPlugin:
             comma_separated_list=True,
             parse_from_config=True,
         )
+        parser.add_option(
+            "--spellcheck-targets",
+            help="Specify the targets to spellcheck",
+            default="names,comments",
+            comma_separated_list=True,
+            parse_from_config=True,
+        )
 
     @classmethod
     def parse_options(cls, options):
         cls.whitelist_path = options.whitelist
         cls.dictionaries = [d + ".txt" for d in options.dictionaries]
+        cls.spellcheck_targets = set(options.spellcheck_targets)
 
     def _detect_errors(self, tokens, use_symbols, token_type):
         code = get_code(token_type)
@@ -153,9 +161,12 @@ class SpellCheckPlugin:
             yield from self._parse_token(token_info)
 
     def _parse_token(self, token_info):
-        if token_info.type == tokenize.NAME:
+        if token_info.type == tokenize.NAME and "names" in self.spellcheck_targets:
             value = token_info.string
-        elif token_info.type == tokenize.COMMENT:
+        elif (
+            token_info.type == tokenize.COMMENT
+            and "comments" in self.spellcheck_targets
+        ):
             value = token_info.string.lstrip("#")
         else:
             return
