@@ -1,6 +1,10 @@
 Flake8 Spellcheck Changelog
 ===========================
 
+0.16.0
+------
+* Add support for specifying spellcheck targets in flake8 configuration
+
 0.15.0
 ------
 * Update technical and en_US
