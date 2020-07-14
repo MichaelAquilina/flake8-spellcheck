@@ -1,6 +1,10 @@
 Flake8 Spellcheck Changelog
 ===========================
 
+0.15.0
+------
+* Update technical and en_US
+
 0.14.0
 ------
 * Add "hardcode" to technical.txt
