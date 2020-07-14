@@ -80,6 +80,17 @@ class TestComments:
         result = flake8dir.run_flake8()
         assert result.out_lines == []
 
+    def test_disabled(self, flake8dir):
+        flake8dir.make_example_py(
+            """
+            # dont "make" b4d c8omm3nts
+            foo = "bar"
+        """
+        )
+        result = flake8dir.run_flake8(["--spellcheck-targets=names"])
+        assert result.exit_code == 0
+        assert result.out_lines == []
+
 
 class TestFunctionDef:
     def test_apostrophe(self, flake8dir):
@@ -134,6 +145,17 @@ class TestFunctionDef:
         assert result.exit_code == 0
         assert result.out_lines == []
 
+    def test_disabled(self, flake8dir):
+        flake8dir.make_example_py(
+            """
+            def mispleled_function(a, b, c):
+                pass
+        """
+        )
+        result = flake8dir.run_flake8(["--spellcheck-targets=comments"])
+        assert result.exit_code == 0
+        assert result.out_lines == []
+
 
 class TestName:
     def test_fail(self, flake8dir):
@@ -165,6 +187,18 @@ class TestName:
         assert result.exit_code == 0
         assert result.out_lines == []
 
+    def test_disabled(self, flake8dir):
+        flake8dir.make_example_py(
+            """
+            my_varaible_namde = "something"
+            SOMETHIGN = "SOMETHING"
+            SOMETHING_ELS = "SOMETHING"
+        """
+        )
+        result = flake8dir.run_flake8(["--spellcheck-targets=comments"])
+        assert result.exit_code == 0
+        assert result.out_lines == []
+
 
 class TestClassDef:
     def test_fail(self, flake8dir):
@@ -189,6 +223,17 @@ class TestClassDef:
         """
         )
         result = flake8dir.run_flake8()
+        assert result.out_lines == []
+
+    def test_disabled(self, flake8dir):
+        flake8dir.make_example_py(
+            """
+        class FackeClaessName:
+            pass
+        """
+        )
+        result = flake8dir.run_flake8(["--spellcheck-targets=comments"])
+        assert result.exit_code == 0
         assert result.out_lines == []
 
 
