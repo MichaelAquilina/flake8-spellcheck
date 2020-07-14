@@ -54,7 +54,7 @@ The above configuration would only spellcheck names
 Contributing
 ------------
 
-If you have found word(s) which is listed as a spelling error but is actually a correct term used
+If you have found word(s) which are listed as a spelling error but are actually correct terms used
 in python or in technical implementations (e.g. http), then you can very easily contribute by
 adding those word(s) to the appropriate dictionaries:
 
