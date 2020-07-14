@@ -20,6 +20,8 @@ float64
 frontend
 geoip
 geoip2
+github
+gitlab
 grafana
 gzip
 hardcode
@@ -33,6 +35,7 @@ md5
 middleware
 mongodb
 mysql
+namespace
 oauth2
 p4
 passwd
