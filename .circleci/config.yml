@@ -19,7 +19,7 @@ test: &test
 jobs:
   lint:
     docker:
-      - image: "python:3.8-stretch"
+      - image: "python:3.8"
     steps:
       - checkout
       - run:
