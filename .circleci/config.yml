@@ -31,7 +31,7 @@ jobs:
           name: isort
           command: |
             pip install isort
-            isort --diff -c
+            isort . --diff -c
       - run:
           name: black
           command: |

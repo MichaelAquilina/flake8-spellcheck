@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import pytest
+
 from flake8_spellcheck import is_number, parse_camel_case, parse_snake_case
 
 
