@@ -38,6 +38,7 @@ mysql
 namespace
 oauth2
 p4
+parallelize
 passwd
 perforce
 pid
