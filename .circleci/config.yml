@@ -23,20 +23,19 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install Lint Requirements
+          command: pip install -r lint-requirements.txt
+      - run:
           name: flake8
           command: |
             pip install .
             flake8 flake8_spellcheck tests
       - run:
           name: isort
-          command: |
-            pip install isort
-            isort . --diff -c
+          command: isort . --diff -c
       - run:
           name: black
-          command: |
-            pip install black==19.3b0
-            black . --check
+          command: black . --check
       - run:
           name: check word dictionaries are sorted
           command: |
@@ -49,9 +48,7 @@ jobs:
             done
       - run:
           name: yamllint
-          command: |
-            pip install yamllint
-            yamllint .
+          command: yamllint .
   test-3.8:
     docker:
       - image: "python:3.7-stretch"
