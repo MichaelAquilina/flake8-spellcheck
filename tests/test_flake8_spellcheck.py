@@ -92,6 +92,18 @@ class TestComments:
         assert result.exit_code == 0
         assert result.out_lines == []
 
+    def test_flake8_pragma(self, flake8dir):
+        flake8dir.make_example_py("foo = 'bar'  # noqa: W503")
+        result = flake8dir.run_flake8()
+        assert result.out_lines == []
+
+    def test_flake8_pragma_spaces(self, flake8dir):
+        flake8dir.make_example_py("foo = 'bar'  #    noqa: W503")
+        result = flake8dir.run_flake8()
+        assert result.out_lines == [
+            "./example.py:1:14: E262 inline comment should start with '# '"
+        ]
+
 
 class TestFunctionDef:
     def test_apostrophe(self, flake8dir):
