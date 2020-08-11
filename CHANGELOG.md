@@ -1,6 +1,10 @@
 Flake8 Spellcheck Changelog
 ===========================
 
+0.18.0
+------
+* Do not report errors on `# noqa:` comments. Thanks @3n-k1!
+
 0.17.0
 ------
 * Update technical.txt
