@@ -104,6 +104,18 @@ class TestComments:
             "./example.py:1:14: E262 inline comment should start with '# '"
         ]
 
+    # Regression test for github.com/MichaelAquilina/flake8-spellcheck/issues/34
+    def test_empty_comment(self, flake8dir):
+        flake8dir.make_example_py(
+            """
+            # the empty comment below should not fail
+            #
+            # hello world
+        """
+        )
+        result = flake8dir.run_flake8()
+        assert result.out_lines == []
+
 
 class TestFunctionDef:
     def test_apostrophe(self, flake8dir):
