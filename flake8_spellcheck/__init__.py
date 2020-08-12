@@ -160,15 +160,20 @@ class SpellCheckPlugin:
         for token_info in self.file_tokens:
             yield from self._parse_token(token_info)
 
+    def _is_valid_comment(self, token_info):
+        return (
+            token_info.type == tokenize.COMMENT
+            and "comments" in self.spellcheck_targets
+            # Ensure comment is non-empty, github.com/MichaelAquilina/flake8-spellcheck/issues/34
+            and token_info.string.strip() != "#"
+            # Ignore flake8 pragma comments
+            and token_info.string.lstrip("#").split()[0] != "noqa:"
+        )
+
     def _parse_token(self, token_info):
         if token_info.type == tokenize.NAME and "names" in self.spellcheck_targets:
             value = token_info.string
-        elif (
-            token_info.type == tokenize.COMMENT
-            and "comments" in self.spellcheck_targets
-            # ignore flake8 pragma comments
-            and token_info.string.lstrip("#").split()[0] != "noqa:"
-        ):
+        elif self._is_valid_comment(token_info):
             value = token_info.string.lstrip("#")
         else:
             return
