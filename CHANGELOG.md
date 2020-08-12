@@ -1,6 +1,10 @@
 Flake8 Spellcheck Changelog
 ===========================
 
+0.18.1
+------
+* Fix regression where plugin would crash on lines with empty comments (Issue #34)
+
 0.18.0
 ------
 * Do not report errors on `# noqa:` comments. Thanks @3n-k1!
