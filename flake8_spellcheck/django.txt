@@ -198,6 +198,7 @@ splitdrive
 splitext
 src
 staticfiles
+strformat
 stringfilter
 subcommand
 subdir
