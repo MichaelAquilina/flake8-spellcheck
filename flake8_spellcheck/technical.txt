@@ -20,6 +20,7 @@ float64
 frontend
 geoip
 geoip2
+getter
 github
 gitlab
 grafana
@@ -50,6 +51,7 @@ readme
 serializable
 serializer
 serializers
+setter
 sha1
 sha256
 stderr
