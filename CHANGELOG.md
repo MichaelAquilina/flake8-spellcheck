@@ -1,6 +1,10 @@
 Flake8 Spellcheck Changelog
 ===========================
 
+0.19.0
+------
+* Updates to technical and python dictionaries
+
 0.18.1
 ------
 * Fix regression where plugin would crash on lines with empty comments (Issue #34)
