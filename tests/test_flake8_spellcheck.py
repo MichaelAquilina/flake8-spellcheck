@@ -116,6 +116,17 @@ class TestComments:
         result = flake8dir.run_flake8()
         assert result.out_lines == []
 
+    # Regression test for https://github.com/MichaelAquilina/flake8-spellcheck/issues/36
+    def test_type_and_noqa(self, flake8dir):
+        flake8dir.make_example_py(
+            """
+            # the comment below should not fail on `W503` or `W504`  # noqa: SC100
+            foo = []  # type: ignore  # noqa: W503  # noqa: W504
+        """
+        )
+        result = flake8dir.run_flake8()
+        assert result.out_lines == []
+
 
 class TestFunctionDef:
     def test_apostrophe(self, flake8dir):
