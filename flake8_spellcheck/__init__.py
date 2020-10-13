@@ -1,8 +1,11 @@
 import os
+import re
 import tokenize
 from string import ascii_lowercase, ascii_uppercase, digits
 
 import pkg_resources
+
+NOQA_REGEX = re.compile(r"#[\s]*noqa:[\s]*[\D]+[\d]+")
 
 
 # Really simple detection function
@@ -174,7 +177,9 @@ class SpellCheckPlugin:
         if token_info.type == tokenize.NAME and "names" in self.spellcheck_targets:
             value = token_info.string
         elif self._is_valid_comment(token_info):
-            value = token_info.string.lstrip("#")
+            # strip out all `noqa: [code]` style comments so they aren't erroneously checked
+            # see https://github.com/MichaelAquilina/flake8-spellcheck/issues/36 for info
+            value = NOQA_REGEX.sub("", token_info.string.lstrip("#"))
         else:
             return
 

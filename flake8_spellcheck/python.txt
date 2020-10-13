@@ -95,6 +95,7 @@ mypy
 namedtuple
 nargs
 netloc
+noqa
 optionxform
 optparse
 pkgutil
