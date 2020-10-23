@@ -167,8 +167,9 @@ class SpellCheckPlugin:
         return (
             token_info.type == tokenize.COMMENT
             and "comments" in self.spellcheck_targets
-            # Ensure comment is non-empty, github.com/MichaelAquilina/flake8-spellcheck/issues/34
-            and token_info.string.strip() != "#"
+            # Ensure comment is neither empty nor a sequence of "#" characters
+            # github.com/MichaelAquilina/flake8-spellcheck/issues/34
+            and token_info.string.lstrip("#").strip() != ''
             # Ignore flake8 pragma comments
             and token_info.string.lstrip("#").split()[0] != "noqa:"
         )
