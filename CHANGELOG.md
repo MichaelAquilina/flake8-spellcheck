@@ -1,6 +1,10 @@
 Flake8 Spellcheck Changelog
 ===========================
 
+0.20.0
+------
+* Updated techincal and django dictionaries (Thanks @3n-k1)
+
 0.19.1
 ------
 * Fix bug where # noqa comments were incorrectly spellchecked if combined with typing comments (Thanks @3n-k1 for the fix)
