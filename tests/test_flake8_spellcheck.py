@@ -127,6 +127,18 @@ class TestComments:
         result = flake8dir.run_flake8()
         assert result.out_lines == []
 
+    # Regression test for github.com/MichaelAquilina/flake8-spellcheck/issues/40
+    def test_pure_number_char_comment(self, flake8dir):
+        flake8dir.make_example_py(
+            """
+            # the comment below should not fail
+            ##########
+            # hello world
+        """
+        )
+        result = flake8dir.run_flake8()
+        assert result.out_lines == []
+
 
 class TestFunctionDef:
     def test_apostrophe(self, flake8dir):
