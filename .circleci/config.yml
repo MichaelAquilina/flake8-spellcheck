@@ -52,22 +52,22 @@ jobs:
 
   test-3.9:
     docker:
-      - image: "python:3.9-stretch"
+      - image: "python:3.9"
     <<: *test
 
   test-3.8:
     docker:
-      - image: "python:3.8-stretch"
+      - image: "python:3.8"
     <<: *test
 
   test-3.7:
     docker:
-      - image: "python:3.7-stretch"
+      - image: "python:3.7"
     <<: *test
 
   test-3.6:
     docker:
-      - image: "python:3.6-stretch"
+      - image: "python:3.6"
     <<: *test
 
   test-3.5:
