@@ -49,6 +49,12 @@ jobs:
       - run:
           name: yamllint
           command: yamllint .
+
+  test-3.9:
+    docker:
+      - image: "python:3.9-stretch"
+    <<: *test
+
   test-3.8:
     docker:
       - image: "python:3.8-stretch"
@@ -79,3 +85,4 @@ workflows:
       - test-3.6
       - test-3.7
       - test-3.8
+      - test-3.9
