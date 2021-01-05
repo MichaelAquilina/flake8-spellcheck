@@ -1,6 +1,10 @@
 Flake8 Spellcheck Changelog
 ===========================
 
+0.22.0
+------
+* Add more common words to techincal and python dictionaries
+
 0.21.0
 ------
 * Add more common words to techincal and python dictionaries
