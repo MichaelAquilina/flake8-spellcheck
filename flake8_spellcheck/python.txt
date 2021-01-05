@@ -16,6 +16,9 @@ b64encode
 basename
 basestring
 bool
+boto
+boto3
+botocore
 builtins
 bytearray
 ceil
@@ -48,6 +51,7 @@ expanduser
 findall
 flake8
 fnmatch
+freezegun
 frozenset
 functools
 getattr
