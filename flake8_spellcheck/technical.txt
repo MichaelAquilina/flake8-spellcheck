@@ -14,10 +14,12 @@ chipset
 cli
 config
 cve
+cves
 cvss
 cvss2
 cvss3
 cwe
+cwes
 deserialize
 dev
 dynamodb
@@ -51,7 +53,9 @@ iso
 iso8601
 jmes
 jmespath
+js
 json
+jsonschema
 jwt
 mariadb
 md5
@@ -76,6 +80,7 @@ pypi
 pypi
 qemu
 readme
+rng
 s3
 schema
 schemas
