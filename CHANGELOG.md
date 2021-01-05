@@ -1,6 +1,10 @@
 Flake8 Spellcheck Changelog
 ===========================
 
+0.21.1
+------
+* Fix crash on lines with only '#' characters (Thanks @paulovcmedeiros)
+
 0.20.0
 ------
 * Updated techincal and django dictionaries (Thanks @3n-k1)
