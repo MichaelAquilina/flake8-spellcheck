@@ -27,6 +27,7 @@ fixme
 float32
 float64
 frontend
+gcp
 geoip
 geoip2
 getter
@@ -75,6 +76,7 @@ pypi
 pypi
 qemu
 readme
+s3
 schema
 schemas
 semver

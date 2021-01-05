@@ -4,6 +4,7 @@ arg
 argparse
 args
 argv
+asdict
 ast
 async
 asyncio
@@ -11,6 +12,7 @@ atime
 attr
 attrib
 attrs
+autospec
 b64decode
 b64encode
 basename
@@ -52,6 +54,7 @@ findall
 flake8
 fnmatch
 freezegun
+fromisoformat
 frozenset
 functools
 getattr
@@ -94,6 +97,7 @@ mkdir
 mkdtemp
 mkstemp
 mktime
+monkeypatch
 mtime
 mypy
 namedtuple
@@ -102,6 +106,7 @@ netloc
 noqa
 optionxform
 optparse
+parametrize
 pkgutil
 posixpath
 pprint
