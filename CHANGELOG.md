@@ -1,7 +1,11 @@
 Flake8 Spellcheck Changelog
 ===========================
 
-0.21.1
+0.21.0
+------
+* Add more common words to techincal and python dictionaries
+
+0.20.1
 ------
 * Fix crash on lines with only '#' characters (Thanks @paulovcmedeiros)
 
