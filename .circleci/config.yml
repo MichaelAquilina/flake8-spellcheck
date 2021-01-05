@@ -51,7 +51,7 @@ jobs:
           command: yamllint .
   test-3.8:
     docker:
-      - image: "python:3.7-stretch"
+      - image: "python:3.8-stretch"
     <<: *test
 
   test-3.7:
