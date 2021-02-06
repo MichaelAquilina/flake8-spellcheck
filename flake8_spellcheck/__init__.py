@@ -1,11 +1,15 @@
 import os
 import re
+import sys
 import tokenize
 from string import ascii_lowercase, ascii_uppercase, digits
 
-import pkg_resources
-
 NOQA_REGEX = re.compile(r"#[\s]*noqa:[\s]*[\D]+[\d]+")
+
+if sys.version_info >= (3, 7):
+    from importlib.resources import read_text
+else:
+    from importlib_resources import read_text  # noqa
 
 
 # Really simple detection function
@@ -87,26 +91,25 @@ class SpellCheckPlugin:
     def __init__(self, tree, filename="(none)", file_tokens=None):
         self.file_tokens = file_tokens
 
-        self.words = set()
-        for dictionary in self.dictionaries:
-            data = pkg_resources.resource_string(__name__, dictionary)
-            data = data.decode("utf8")
-            self.words |= set(w.lower() for w in data.split("\n"))
-
-        if os.path.exists(self.whitelist_path):
-            with open(self.whitelist_path, "r") as fp:
+    @classmethod
+    def load_dictionary(cls, options):
+        words = set()
+        for dictionary in ("{}.txt".format(d) for d in options.dictionaries):
+            data = read_text(__name__, dictionary)
+            words |= set(w.lower() for w in data.split("\n"))
+        if os.path.exists(options.whitelist):
+            with open(options.whitelist, "r") as fp:
                 whitelist = fp.read()
-
             whitelist = set(w.lower() for w in whitelist.split("\n"))
-            self.words |= whitelist
-
+            words |= whitelist
         # Hacky way of getting dictionary with symbols stripped
-        self.no_symbols = set()
-        for w in self.words:
+        no_symbols = set()
+        for w in words:
             if w.endswith("'s"):
-                self.no_symbols.add(w.replace("'s", ""))
+                no_symbols.add(w.replace("'s", ""))
             else:
-                self.no_symbols.add(w.replace("'", ""))
+                no_symbols.add(w.replace("'", ""))
+        return words, no_symbols
 
     @classmethod
     def add_options(cls, parser):
@@ -135,8 +138,7 @@ class SpellCheckPlugin:
 
     @classmethod
     def parse_options(cls, options):
-        cls.whitelist_path = options.whitelist
-        cls.dictionaries = [d + ".txt" for d in options.dictionaries]
+        cls.words, cls.no_symbols = cls.load_dictionary(options)
         cls.spellcheck_targets = set(options.spellcheck_targets)
 
     def _detect_errors(self, tokens, use_symbols, token_type):

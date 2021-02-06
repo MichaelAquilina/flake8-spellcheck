@@ -2,7 +2,7 @@ import setuptools
 
 from flake8_spellcheck import SpellCheckPlugin
 
-requires = ["flake8 > 3.0.0"]
+requires = ["flake8 > 3.0.0", 'importlib-resources>=3.3;python_version<"3.7"']
 
 with open("README.rst") as fp:
     long_description = fp.read()
