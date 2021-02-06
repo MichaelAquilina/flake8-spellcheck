@@ -4,6 +4,8 @@ import sys
 import tokenize
 from string import ascii_lowercase, ascii_uppercase, digits
 
+from .version import version as __version__
+
 NOQA_REGEX = re.compile(r"#[\s]*noqa:[\s]*[\D]+[\d]+")
 
 if sys.version_info >= (3, 7):
@@ -86,7 +88,7 @@ def get_code(token_type):
 
 class SpellCheckPlugin:
     name = "flake8-spellcheck"
-    version = "0.23.0"
+    version = __version__
 
     def __init__(self, tree, filename="(none)", file_tokens=None):
         self.file_tokens = file_tokens
@@ -204,3 +206,6 @@ class SpellCheckPlugin:
 
         for error_tuple in self._detect_errors(tokens, use_symbols, token_info.type):
             yield error_tuple
+
+
+__all__ = ("__versions__", "SpellCheckPlugin")

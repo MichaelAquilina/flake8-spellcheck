@@ -1,5 +1,9 @@
 Flake8 Spellcheck Changelog
 ===========================
+0.24.0
+------
+* Speed up run for multiple files by loading once the dictionary, and using ``importlib.resources`` instead of
+  ``pkg_resources`` - by @gaborbernat.
 
 0.21.0 - 0.23.0
 ---------------
