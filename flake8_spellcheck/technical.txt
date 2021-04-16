@@ -2,8 +2,12 @@ adb
 auth
 autocomplete
 autofill
+autoformat
+autoformatter
+autoformatters
 autotest
 backend
+base64
 bitwise
 bmp
 buildability
@@ -13,6 +17,7 @@ checkboxes
 chipset
 cli
 config
+CORS
 cve
 cves
 cvss
@@ -20,10 +25,12 @@ cvss2
 cvss3
 cwe
 cwes
+dedupe
 deserialize
 dev
 dynamodb
 erroring
+falsy
 fh
 fixme
 float32
@@ -38,6 +45,7 @@ gitlab
 golang
 grafana
 gzip
+hacky
 hardcode
 hardcoded
 hardcoding
@@ -64,6 +72,7 @@ mongodb
 mysql
 namespace
 ndjson
+nginx
 npm
 nvd
 oauth2
@@ -74,6 +83,7 @@ perforce
 pid
 png
 postgres
+prefetched
 profiler
 protobuf
 pypi
@@ -84,6 +94,7 @@ rng
 s3
 schema
 schemas
+SDK
 semver
 serializable
 serializer
@@ -95,6 +106,7 @@ stderr
 stdin
 stdout
 stdout
+subdirectory
 symlink
 titlecase
 tls
@@ -111,9 +123,11 @@ unhandled
 unhashable
 uri
 usr
+webserver
 whitespace
 windll
 workspace
 workspaces
+XSS
 zipfile
 zlib
