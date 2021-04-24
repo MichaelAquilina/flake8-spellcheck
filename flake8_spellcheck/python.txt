@@ -135,6 +135,7 @@ rsplit
 rstrip
 scandir
 setattr
+setdefault
 setuptools
 shutil
 sizeof
