@@ -110,6 +110,7 @@ noqa
 optionxform
 optparse
 parametrize
+pathlib
 pkgutil
 posixpath
 pprint
