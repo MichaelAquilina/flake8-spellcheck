@@ -1,17 +1,14 @@
 import os
 import re
-import sys
 import tokenize
+from pathlib import Path
 from string import ascii_lowercase, ascii_uppercase, digits
 
 from .version import version as __version__
 
-NOQA_REGEX = re.compile(r"#[\s]*noqa:[\s]*[\D]+[\d]+")
 
-if sys.version_info >= (3, 7):
-    from importlib.resources import read_text
-else:
-    from importlib_resources import read_text  # noqa
+NOQA_REGEX = re.compile(r"#[\s]*noqa:[\s]*[\D]+[\d]+")
+DICTIONARY_PATH = Path(__file__).parent
 
 
 # Really simple detection function
@@ -96,8 +93,9 @@ class SpellCheckPlugin:
     @classmethod
     def load_dictionary(cls, options):
         words = set()
-        for dictionary in ("{}.txt".format(d) for d in options.dictionaries):
-            data = read_text(__name__, dictionary)
+        for dictionary_name in options.dictionaries:
+            dictionary_path = DICTIONARY_PATH / "{}.txt".format(dictionary_name)
+            data = dictionary_path.read_text()
             words |= set(w.lower() for w in data.split("\n"))
         if os.path.exists(options.whitelist):
             with open(options.whitelist, "r") as fp:
