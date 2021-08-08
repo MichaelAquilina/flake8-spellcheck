@@ -62,6 +62,10 @@ adding those word(s) to the appropriate dictionaries:
 * `technical dictionary <flake8_spellcheck/technical.txt>`_
 * `django dictionary <flake8_spellcheck/django.txt>`_
 
+Before you submit a PR, it is recommended to run ``check-sorting.sh`` in the root of this repository,
+to verify that all the dictionary files are still sorted correctly. Sorting is enforced by CI, so
+you'll need to make sure the files are sorted before your PR can be merged.
+
 
 .. |CircleCI| image:: https://circleci.com/gh/MichaelAquilina/flake8-spellcheck.svg?style=svg
    :target: https://circleci.com/gh/MichaelAquilina/flake8-spellcheck
