@@ -24,6 +24,7 @@ botocore
 builtins
 bytearray
 ceil
+checkable
 chmod
 chr
 classmethod
@@ -49,6 +50,7 @@ enum
 env
 environ
 errno
+exc
 expanduser
 findall
 flake8
@@ -109,7 +111,6 @@ netloc
 noqa
 optionxform
 optparse
-parametrize
 pathlib
 pkgutil
 posixpath
@@ -153,9 +154,11 @@ sys
 tarfile
 tempfile
 timedelta
+tokenize
 traceback
 tzinfo
 tzname
+unittest
 urlencode
 urljoin
 urllib
