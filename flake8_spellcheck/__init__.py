@@ -12,7 +12,6 @@ from flake8.options.manager import OptionManager
 
 from .version import version as __version__
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -109,7 +108,9 @@ def find_allowlist_path(options: Namespace) -> Optional[Path]:
         if options.spellcheck_allowlist.exists():
             return options.spellcheck_allowlist
         else:
-            logger.error("ERROR: Supplied allowlist file for flake8-spellcheck does not exist.")
+            logger.error(
+                "ERROR: Supplied allowlist file for flake8-spellcheck does not exist."
+            )
             return None
     elif options.whitelist:
         logger.warning(
@@ -119,7 +120,9 @@ def find_allowlist_path(options: Namespace) -> Optional[Path]:
         if whitelist_path.exists():
             return whitelist_path
         else:
-            logger.error("ERROR: Supplied allowlist file for flake8-spellcheck does not exist.")
+            logger.error(
+                "ERROR: Supplied allowlist file for flake8-spellcheck does not exist."
+            )
             return None
 
     default_allowlist_path = Path("spellcheck-allowlist.txt")
@@ -150,11 +153,15 @@ class SpellCheckPlugin:
     name = "flake8-spellcheck"
     version = __version__
 
-    def __init__(self, tree, filename="(none)", file_tokens: Iterable[tokenize.TokenInfo] = None):
+    def __init__(
+        self, tree, filename="(none)", file_tokens: Iterable[tokenize.TokenInfo] = None
+    ):
         self.file_tokens: Iterable[tokenize.TokenInfo] = file_tokens
 
     @classmethod
-    def load_dictionaries(cls, options: Namespace) -> Tuple[FrozenSet[str], FrozenSet[str]]:
+    def load_dictionaries(
+        cls, options: Namespace
+    ) -> Tuple[FrozenSet[str], FrozenSet[str]]:
         words = set()
 
         dictionary_names: Iterable[str]
@@ -167,7 +174,9 @@ class SpellCheckPlugin:
             if options.spellcheck_disable_default_dictionaries:
                 dictionary_names = flatten_dictionary_add_list(options)
             else:
-                dictionary_names = chain(DEFAULT_DICTIONARY_NAMES, flatten_dictionary_add_list(options))
+                dictionary_names = chain(
+                    DEFAULT_DICTIONARY_NAMES, flatten_dictionary_add_list(options)
+                )
 
         for dictionary_name in dictionary_names:
             dictionary_path = DICTIONARY_PATH / "{}.txt".format(dictionary_name)
@@ -175,7 +184,11 @@ class SpellCheckPlugin:
                 dictionary_data = dictionary_path.read_text()
                 words |= set(word.lower() for word in dictionary_data.split("\n"))
             else:
-                logger.error("ERROR: Supplied built-in dictionary '{}' does not exist.".format(dictionary_name))
+                logger.error(
+                    "ERROR: Supplied built-in dictionary '{}' does not exist.".format(
+                        dictionary_name
+                    )
+                )
 
         allowlist_path: Optional[Path] = find_allowlist_path(options)
         if allowlist_path:
@@ -238,7 +251,9 @@ class SpellCheckPlugin:
         cls.words, cls.no_symbols = cls.load_dictionaries(options)
         cls.spellcheck_targets = frozenset(options.spellcheck_targets)
 
-    def _detect_errors(self, tokens: Iterable[Tuple[Position, str]], use_symbols: bool, token_type: int) -> Iterator[LintError]:
+    def _detect_errors(
+        self, tokens: Iterable[Tuple[Position, str]], use_symbols: bool, token_type: int
+    ) -> Iterator[LintError]:
         code = get_code(token_type)
 
         for position, token in tokens:
