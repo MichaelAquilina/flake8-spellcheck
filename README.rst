@@ -6,71 +6,103 @@ Flake8 Spellcheck
 
 Flake8 Plugin that spellchecks variables, functions, classes and other bits of your python code.
 
-You can whitelist words that are specific to your project simply by adding them to ``whitelist.txt``
-in the root of your project directory. Each word you add  should be separated by a newline.
+You can whitelist words that are specific to your project simply by adding them to ``spellcheck-allowlist.txt``
+in the root of your project directory. Each word you add should be separated by a newline.
 
 Spelling is assumed to be in en_US.
 
 This plugin supports python 3.6+
 
 Codes
------
+=====
 
 * SC100 - Spelling error in comments
 * SC200 - Spelling error in name (e.g. variable, function, class)
 
-Enable Django support
----------------------
+Configuration
+=============
 
-You can enable support for a Django dictionary by adding the following to your
-flake8 configuration (e.g. your ``.flake8`` file):
+Enable non-default dictionaries
+-------------------------------
+
+This plugin comes with a couple of dictionary files that aren't enabled by default.
+
+- ``django``
+- ``pytest``
+
+To enable a custom dictionary, you can use the ``--spellcheck-add-dictionary`` flag.
+
+.. code-block::
+
+    flake8 --spellcheck-add-dictionary django --spellcheck-add-dictionary pytest mypackage
+
+Disable default dictionaries
+----------------------------
+
+The default dictionary list is as follows:
+
+- ``en_US``
+- ``technical``
+- ``python``
+
+You can disable the default dictionary list, if you want to be highly specific about the wordlist in use.
+
+.. code-block::
+
+    flake8 --spellcheck-disable-default-dictionaries mypackage
+
+Or in your flake8 configuration (e.g. your ``.flake8`` file):
 
 .. code-block:: ini
 
-    [flake8]
-    dictionaries=en_US,python,technical,django
+    spellcheck-disable-default-dictionaries = true
 
-Enable pandas support
----------------------
+You can then enable built-in dictionaries one-by-one as necessary.
 
-You can enable support for pandas DataFrames by adding the following to your
-flake8 configuration (e.g. your ``.flake8`` file):
+.. code-block::
+
+    flake8 --spellcheck-disable-default-dictionaries --spellcheck-add-dictionary python --spellcheck-add-dictionary pytest --spellcheck-add-dictionary pandas mypackage
+
+Or in your flake8 configuration file:
 
 .. code-block:: ini
 
-    [flake8]
-    dictionaries=en_US,python,technical,pandas
+    spellcheck-add-dictionary = python,pytest,pandas
 
-
-Specify Targets
----------------
+Specify Code Targets
+--------------------
 
 Both ``comments`` and ``names`` (variable names, function names...) are spellchecked by default.
-You can specify what targets to spellcheck in your flake8 configuration (e.g. in your ``.flake8`` file):
+You can specify what targets to spellcheck by specifying the ``--spellcheck-targets`` flag.
+
+.. code-block::
+
+    flake8 --spellcheck-targets comments mypackage
+
+Or by setting the ``spellcheck-targets`` option in your flake8 configuration (e.g. in your ``.flake8`` file).
 
 .. code-block:: ini
 
    [flake8]
    spellcheck-targets=comments
 
-The above configuration would only spellcheck comments
+The above configuration would only spellcheck comments, while this configuration will only check symbol names.
 
 .. code-block:: ini
 
    [flake8]
    spellcheck-targets=names
 
-The above configuration would only spellcheck names
-
 Contributing
-------------
+============
 
 If you have found word(s) which are listed as a spelling error but are actually correct terms used
 in python or in technical implementations (e.g. http), then you can very easily contribute by
 adding those word(s) to the appropriate dictionaries:
 
 * `python dictionary <flake8_spellcheck/python.txt>`_
-* `technical dictionary <flake8_spellcheck/technical.txt>`_
+* `pytest dictionary <flake8_spellcheck/pytest.txt>`_
+* `general technical dictionary <flake8_spellcheck/technical.txt>`_
 * `django dictionary <flake8_spellcheck/django.txt>`_
 * `pandas dictionary <flake8_spellcheck/pandas.txt>`_
 
