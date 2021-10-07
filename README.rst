@@ -11,7 +11,7 @@ in the root of your project directory. Each word you add  should be separated by
 
 Spelling is assumed to be in en_US.
 
-This plugin supports python 3.5+
+This plugin supports python 3.6+
 
 Codes
 -----

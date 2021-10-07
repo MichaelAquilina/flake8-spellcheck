@@ -63,18 +63,12 @@ jobs:
       - image: "python:3.6"
     <<: *test
 
-  test-3.5:
-    docker:
-      - image: "python:3.5-stretch"
-    <<: *test
-
 
 workflows:
   version: 2
   spellcheck_test:
     jobs:
       - lint
-      - test-3.5
       - test-3.6
       - test-3.7
       - test-3.8
