@@ -3,10 +3,11 @@ import importlib.metadata
 import os
 import re
 import tokenize
+import unicodedata
 from argparse import Namespace
 from ast import AST
 from pathlib import Path
-from string import ascii_lowercase, ascii_uppercase, digits
+from string import digits
 from tokenize import TokenInfo
 from typing import Any, FrozenSet, Iterable, Iterator, List, Optional, Tuple, Type
 
@@ -24,6 +25,11 @@ class WordCase(enum.Enum):
     URL = enum.auto()
     SNAKE = enum.auto()
     CAMEL = enum.auto()
+
+
+all_unicode = "".join(chr(i) for i in range(65536))
+unicode_lowercase_letters = "".join(c for c in all_unicode if unicodedata.category(c) == "Ll")
+unicode_uppercase_letters = "".join(c for c in all_unicode if unicodedata.category(c) == "Lu")
 
 
 # Really simple detection function
@@ -45,12 +51,12 @@ def parse_camel_case(name: str, position: Position) -> Iterator[Tuple[Position, 
     buffer = ""
     for c in name:
         index += 1
-        if c in ascii_lowercase or c in digits or c in "'":
+        if c in unicode_lowercase_letters or c in digits or c in "'":
             buffer += c
         else:
             if buffer:
                 yield (position[0], start), buffer
-            if c in ascii_uppercase:
+            if c in unicode_uppercase_letters:
                 buffer = c
                 start = index - 1
             else:
@@ -67,7 +73,7 @@ def parse_snake_case(name: str, position: Position) -> Iterator[Tuple[Position, 
     buffer = ""
     for c in name:
         index += 1
-        if c in ascii_lowercase or c in digits or c in ascii_uppercase:
+        if c in unicode_lowercase_letters or c in digits or c in unicode_uppercase_letters:
             buffer += c
         else:
             if buffer:
