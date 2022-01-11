@@ -30,6 +30,17 @@ flake8 configuration (e.g. your ``.flake8`` file):
     [flake8]
     dictionaries=en_US,python,technical,django
 
+Enable pandas support
+---------------------
+
+You can enable support for pandas DataFrames by adding the following to your
+flake8 configuration (e.g. your ``.flake8`` file):
+
+.. code-block:: ini
+
+    [flake8]
+    dictionaries=en_US,python,technical,pandas
+
 
 Specify Targets
 ---------------
@@ -61,6 +72,7 @@ adding those word(s) to the appropriate dictionaries:
 * `python dictionary <flake8_spellcheck/python.txt>`_
 * `technical dictionary <flake8_spellcheck/technical.txt>`_
 * `django dictionary <flake8_spellcheck/django.txt>`_
+* `pandas dictionary <flake8_spellcheck/pandas.txt>`_
 
 Before you submit a PR, it is recommended to run ``check-sorting.sh`` in the root of this repository,
 to verify that all the dictionary files are still sorted correctly. Sorting is enforced by CI, so
