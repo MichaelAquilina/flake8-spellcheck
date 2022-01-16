@@ -1,5 +1,11 @@
 Flake8 Spellcheck Changelog
 ===========================
+
+0.25.0
+------
+* Add partial support for pandas dictionaries (Thanks @aaronzipp)
+* Update python dictionary with missing words
+
 0.24.0
 ------
 * Speed up run for multiple files by loading once the dictionary, and using ``importlib.resources`` instead of
