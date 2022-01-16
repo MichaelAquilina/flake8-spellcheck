@@ -134,6 +134,7 @@ returncode
 rmtree
 rsplit
 rstrip
+runtime
 scandir
 setattr
 setdefault
