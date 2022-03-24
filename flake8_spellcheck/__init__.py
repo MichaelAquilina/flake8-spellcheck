@@ -6,7 +6,6 @@ from string import ascii_lowercase, ascii_uppercase, digits
 
 from .version import version as __version__
 
-
 NOQA_REGEX = re.compile(r"#[\s]*noqa:[\s]*[\D]+[\d]+")
 DICTIONARY_PATH = Path(__file__).parent
 
