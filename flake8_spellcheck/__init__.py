@@ -105,11 +105,15 @@ class SpellCheckPlugin:
     name = "flake8-spellcheck"
     version = __version__
 
-    def __init__(self, tree, filename="(none)", file_tokens: Iterable[tokenize.TokenInfo] = None):
+    def __init__(
+        self, tree, filename="(none)", file_tokens: Iterable[tokenize.TokenInfo] = None
+    ):
         self.file_tokens: Iterable[tokenize.TokenInfo] = file_tokens
 
     @classmethod
-    def load_dictionaries(cls, options: Namespace) -> Tuple[FrozenSet[str], FrozenSet[str]]:
+    def load_dictionaries(
+        cls, options: Namespace
+    ) -> Tuple[FrozenSet[str], FrozenSet[str]]:
         words = set()
         for dictionary in ("{}.txt".format(d) for d in options.dictionaries):
             data = read_text(__name__, dictionary)
@@ -160,7 +164,9 @@ class SpellCheckPlugin:
         cls.words, cls.no_symbols = cls.load_dictionaries(options)
         cls.spellcheck_targets = frozenset(options.spellcheck_targets)
 
-    def _detect_errors(self, tokens: Iterable[Tuple[Position, str]], use_symbols: bool, token_type: int) -> Iterator[LintError]:
+    def _detect_errors(
+        self, tokens: Iterable[Tuple[Position, str]], use_symbols: bool, token_type: int
+    ) -> Iterator[LintError]:
         code = get_code(token_type)
 
         for position, token in tokens:
