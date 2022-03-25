@@ -2,5 +2,8 @@
 requires = ["setuptools >= 44", "wheel >= 0.30", "setuptools_scm[toml]>=3.4"]
 build-backend = "setuptools.build_meta"
 
+[tool.black]
+exclude = "version.py"
+
 [tool.setuptools_scm]
 write_to = "flake8_spellcheck/version.py"
