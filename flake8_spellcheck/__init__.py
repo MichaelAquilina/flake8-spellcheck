@@ -1,8 +1,13 @@
+import enum
 import os
 import re
 import sys
 import tokenize
+from argparse import Namespace
 from string import ascii_lowercase, ascii_uppercase, digits
+from typing import Any, FrozenSet, Iterable, Iterator, List, Tuple, Type
+
+from flake8.options.manager import OptionManager
 
 from .version import version as __version__
 
@@ -14,26 +19,36 @@ else:
     from importlib_resources import read_text  # noqa
 
 
+LintError = Tuple[int, int, str, Type["SpellCheckPlugin"]]
+Position = Tuple[int, int]
+
+
+class WordCase(enum.Enum):
+    URL = enum.auto()
+    SNAKE = enum.auto()
+    CAMEL = enum.auto()
+
+
 # Really simple detection function
-def detect_case(name):
-    if name.startswith("http"):
-        return "url"
+def detect_case(word: str) -> WordCase:
+    if word.startswith("http"):
+        return WordCase.URL
     # ignore leading underscores when testing for snake case
-    elif "_" in name.lstrip("_"):
-        return "snake"
-    elif name.isupper():
-        return "snake"
+    elif "_" in word.lstrip("_"):
+        return WordCase.SNAKE
+    elif word.isupper():
+        return WordCase.SNAKE
     else:
-        return "camel"
+        return WordCase.CAMEL
 
 
-def parse_camel_case(name, position):
+def parse_camel_case(name: str, position: Position) -> Iterator[Tuple[Position, str]]:
     index = position[1]
     start = index
     buffer = ""
     for c in name:
         index += 1
-        if c in ascii_lowercase or c in digits or c in ("'"):
+        if c in ascii_lowercase or c in digits or c in "'":
             buffer += c
         else:
             if buffer:
@@ -49,7 +64,7 @@ def parse_camel_case(name, position):
         yield (position[0], start), buffer
 
 
-def parse_snake_case(name, position):
+def parse_snake_case(name: str, position: Position) -> Iterator[Tuple[Position, str]]:
     index = position[1]
     start = index
     buffer = ""
@@ -68,7 +83,7 @@ def parse_snake_case(name, position):
         yield (position[0], start), buffer
 
 
-def is_number(value):
+def is_number(value: Any) -> bool:
     try:
         float(value)
     except ValueError:
@@ -77,7 +92,7 @@ def is_number(value):
         return True
 
 
-def get_code(token_type):
+def get_code(token_type: int) -> str:
     if token_type == tokenize.COMMENT:
         return "SC100"
     elif token_type == tokenize.NAME:
@@ -90,20 +105,26 @@ class SpellCheckPlugin:
     name = "flake8-spellcheck"
     version = __version__
 
-    def __init__(self, tree, filename="(none)", file_tokens=None):
-        self.file_tokens = file_tokens
+    def __init__(
+        self, tree, filename="(none)", file_tokens: Iterable[tokenize.TokenInfo] = None
+    ):
+        self.file_tokens: Iterable[tokenize.TokenInfo] = file_tokens
 
     @classmethod
-    def load_dictionary(cls, options):
+    def load_dictionaries(
+        cls, options: Namespace
+    ) -> Tuple[FrozenSet[str], FrozenSet[str]]:
         words = set()
         for dictionary in ("{}.txt".format(d) for d in options.dictionaries):
             data = read_text(__name__, dictionary)
             words |= set(w.lower() for w in data.split("\n"))
+
         if os.path.exists(options.whitelist):
             with open(options.whitelist, "r") as fp:
                 whitelist = fp.read()
             whitelist = set(w.lower() for w in whitelist.split("\n"))
             words |= whitelist
+
         # Hacky way of getting dictionary with symbols stripped
         no_symbols = set()
         for w in words:
@@ -111,10 +132,10 @@ class SpellCheckPlugin:
                 no_symbols.add(w.replace("'s", ""))
             else:
                 no_symbols.add(w.replace("'", ""))
-        return words, no_symbols
+        return frozenset(words), frozenset(no_symbols)
 
     @classmethod
-    def add_options(cls, parser):
+    def add_options(cls, parser: OptionManager):
         parser.add_option(
             "--whitelist",
             help="Path to text file containing whitelisted words",
@@ -139,11 +160,13 @@ class SpellCheckPlugin:
         )
 
     @classmethod
-    def parse_options(cls, options):
-        cls.words, cls.no_symbols = cls.load_dictionary(options)
-        cls.spellcheck_targets = set(options.spellcheck_targets)
+    def parse_options(cls, options: Namespace) -> None:
+        cls.words, cls.no_symbols = cls.load_dictionaries(options)
+        cls.spellcheck_targets = frozenset(options.spellcheck_targets)
 
-    def _detect_errors(self, tokens, use_symbols, token_type):
+    def _detect_errors(
+        self, tokens: Iterable[Tuple[Position, str]], use_symbols: bool, token_type: int
+    ) -> Iterator[LintError]:
         code = get_code(token_type)
 
         for position, token in tokens:
@@ -163,11 +186,11 @@ class SpellCheckPlugin:
                     type(self),
                 )
 
-    def run(self):
+    def run(self) -> Iterator[LintError]:
         for token_info in self.file_tokens:
             yield from self._parse_token(token_info)
 
-    def _is_valid_comment(self, token_info):
+    def _is_valid_comment(self, token_info: tokenize.TokenInfo) -> bool:
         return (
             token_info.type == tokenize.COMMENT
             and "comments" in self.spellcheck_targets
@@ -178,7 +201,7 @@ class SpellCheckPlugin:
             and token_info.string.lstrip("#").split()[0] != "noqa:"
         )
 
-    def _parse_token(self, token_info):
+    def _parse_token(self, token_info: tokenize.TokenInfo) -> Iterator[LintError]:
         if token_info.type == tokenize.NAME and "names" in self.spellcheck_targets:
             value = token_info.string
         elif self._is_valid_comment(token_info):
@@ -188,24 +211,26 @@ class SpellCheckPlugin:
         else:
             return
 
-        tokens = []
+        tokens: List[Tuple[Position, str]] = []
         for word in value.split(" "):
             case = detect_case(word)
-            if case == "url":
+            if case == WordCase.URL:
                 # Nothing to do here
                 continue
-            elif case == "snake":
+            elif case == WordCase.SNAKE:
                 tokens.extend(parse_snake_case(word, token_info.start))
-            elif case == "camel":
+            elif case == WordCase.CAMEL:
                 tokens.extend(parse_camel_case(word, token_info.start))
 
         if token_info.type == tokenize.NAME:
             use_symbols = False
         elif token_info.type == tokenize.COMMENT:
             use_symbols = True
+        else:
+            return
 
         for error_tuple in self._detect_errors(tokens, use_symbols, token_info.type):
             yield error_tuple
 
 
-__all__ = ("__versions__", "SpellCheckPlugin")
+__all__ = ("__version__", "SpellCheckPlugin")
