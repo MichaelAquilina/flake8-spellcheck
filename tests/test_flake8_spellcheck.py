@@ -164,6 +164,7 @@ class TestFunctionDef:
                 def dont_fail(a):
                     return a + 2
 
+
                 def cant_fail(b):
                     return b * 4
                 """
