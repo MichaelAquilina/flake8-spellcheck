@@ -1,2 +1,2 @@
 pytest
-pytest-flake8dir
+pytest-flake8-path

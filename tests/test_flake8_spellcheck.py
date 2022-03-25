@@ -43,307 +43,309 @@ def test_is_number(value, result):
     assert is_number(value) is result
 
 
-def test_python_words(flake8dir):
-    flake8dir.make_example_py(
+def test_python_words(flake8_path):
+    (flake8_path / "example.py").write_text(
         """
-        id = str(4)
-        if isinstance(id, int):
-            dict(id=id)
-    """
+id = str(4)
+if isinstance(id, int):
+    dict(id=id)
+"""
     )
-    result = flake8dir.run_flake8()
+    result = flake8_path.run_flake8()
     assert result.out_lines == []
 
 
 class TestComments:
-    def test_fail(self, flake8dir):
-        flake8dir.make_example_py(
+    def test_fail(self, flake8_path):
+        (flake8_path / "example.py").write_text(
             """
-            # dont "make" b4d c8omm3nts
-            foo = "bar"
-        """
+# dont "make" b4d c8omm3nts
+foo = "bar"
+"""
         )
-        result = flake8dir.run_flake8()
+        result = flake8_path.run_flake8()
         assert result.exit_code == 1
         assert result.out_lines == [
-            "./example.py:1:1: SC100 Possibly misspelt word: 'dont'",
-            "./example.py:1:1: SC100 Possibly misspelt word: 'b4d'",
-            "./example.py:1:1: SC100 Possibly misspelt word: 'c8omm3nts'",
+            "./example.py:2:1: SC100 Possibly misspelt word: 'dont'",
+            "./example.py:2:1: SC100 Possibly misspelt word: 'b4d'",
+            "./example.py:2:1: SC100 Possibly misspelt word: 'c8omm3nts'",
         ]
 
-    def test_pass(self, flake8dir):
-        flake8dir.make_example_py(
+    def test_pass(self, flake8_path):
+        (flake8_path / "example.py").write_text(
             """
-            # don't "make" 'bad' comments
-            foo = "bar"
-        """
+# don't "make" 'bad' comments
+foo = "bar"
+"""
         )
-        result = flake8dir.run_flake8()
+        result = flake8_path.run_flake8()
         assert result.out_lines == []
 
-    def test_disabled(self, flake8dir):
-        flake8dir.make_example_py(
+    def test_disabled(self, flake8_path):
+        (flake8_path / "example.py").write_text(
             """
-            # dont "make" b4d c8omm3nts
-            foo = "bar"
-        """
+# dont "make" b4d c8omm3nts
+foo = "bar"
+"""
         )
-        result = flake8dir.run_flake8(["--spellcheck-targets=names"])
+        result = flake8_path.run_flake8(["--spellcheck-targets=names"])
         assert result.exit_code == 0
         assert result.out_lines == []
 
-    def test_flake8_pragma(self, flake8dir):
-        flake8dir.make_example_py("foo = 'bar'  # noqa: W503")
-        result = flake8dir.run_flake8()
+    def test_flake8_pragma(self, flake8_path):
+        (flake8_path / "example.py").write_text("foo = 'bar'  # noqa: W503\n")
+        result = flake8_path.run_flake8()
         assert result.out_lines == []
 
-    def test_flake8_pragma_spaces(self, flake8dir):
-        flake8dir.make_example_py("foo = 'bar'  #    noqa: W503")
-        result = flake8dir.run_flake8()
+    def test_flake8_pragma_spaces(self, flake8_path):
+        (flake8_path / "example.py").write_text("foo = 'bar'  #    noqa: W503\n")
+        result = flake8_path.run_flake8()
         assert result.out_lines == [
             "./example.py:1:14: E262 inline comment should start with '# '"
         ]
 
     # Regression test for github.com/MichaelAquilina/flake8-spellcheck/issues/34
-    def test_empty_comment(self, flake8dir):
-        flake8dir.make_example_py(
+    def test_empty_comment(self, flake8_path):
+        (flake8_path / "example.py").write_text(
             """
-            # the empty comment below should not fail
-            #
-            # hello world
-        """
+# the empty comment below should not fail
+#
+# hello world
+"""
         )
-        result = flake8dir.run_flake8()
+        result = flake8_path.run_flake8()
         assert result.out_lines == []
 
     # Regression test for https://github.com/MichaelAquilina/flake8-spellcheck/issues/36
-    def test_type_and_noqa(self, flake8dir):
-        flake8dir.make_example_py(
+    def test_type_and_noqa(self, flake8_path):
+        (flake8_path / "example.py").write_text(
             """
-            # the comment below should not fail on `W503` or `W504`  # noqa: SC100
-            foo = []  # type: ignore  # noqa: W503  # noqa: W504
-        """
+# the comment below should not fail on `W503` or `W504`  # noqa: SC100
+foo = []  # type: ignore  # noqa: W503  # noqa: W504
+"""
         )
-        result = flake8dir.run_flake8()
+        result = flake8_path.run_flake8()
         assert result.out_lines == []
 
     # Regression test for github.com/MichaelAquilina/flake8-spellcheck/issues/40
-    def test_pure_number_char_comment(self, flake8dir):
-        flake8dir.make_example_py(
+    def test_pure_number_char_comment(self, flake8_path):
+        (flake8_path / "example.py").write_text(
             """
-            # the comment below should not fail
-            ##########
-            # hello world
-        """
+# the comment below should not fail
+##########
+# hello world
+"""
         )
-        result = flake8dir.run_flake8()
+        result = flake8_path.run_flake8()
         assert result.out_lines == []
 
 
 class TestFunctionDef:
-    def test_apostrophe(self, flake8dir):
-        flake8dir.make_example_py(
+    def test_apostrophe(self, flake8_path):
+        (flake8_path / "example.py").write_text(
             """
-            def dont_fail(a):
-                return a + 2
+def dont_fail(a):
+    return a + 2
 
 
-            def cant_fail(b):
-                return b * 4
-        """
+def cant_fail(b):
+    return b * 4
+"""
         )
-        result = flake8dir.run_flake8()
+        result = flake8_path.run_flake8()
         assert result.exit_code == 0
         assert result.out_lines == []
 
-    def test_apostrophe_ending_with_s(self, flake8dir):
-        flake8dir.make_example_py(
+    def test_apostrophe_ending_with_s(self, flake8_path):
+        (flake8_path / "example.py").write_text(
             """
-            def request_classs(a, b, c):
-                pass
-        """
+def request_classs(a, b, c):
+    pass
+"""
         )
-        result = flake8dir.run_flake8()
+        result = flake8_path.run_flake8()
         assert result.exit_code == 1
         assert result.out_lines == [
-            "./example.py:1:13: SC200 Possibly misspelt word: 'classs'"
+            "./example.py:2:13: SC200 Possibly misspelt word: 'classs'"
         ]
 
-    def test_fail(self, flake8dir):
-        flake8dir.make_example_py(
+    def test_fail(self, flake8_path):
+        (flake8_path / "example.py").write_text(
             """
-            def mispleled_function(a, b, c):
-                pass
-        """
+def mispleled_function(a, b, c):
+    pass
+"""
         )
-        result = flake8dir.run_flake8()
+        result = flake8_path.run_flake8()
         assert result.exit_code == 1
         assert result.out_lines == [
-            "./example.py:1:5: SC200 Possibly misspelt word: 'mispleled'"
+            "./example.py:2:5: SC200 Possibly misspelt word: 'mispleled'"
         ]
 
-    def test_pass(self, flake8dir):
-        flake8dir.make_example_py(
+    def test_pass(self, flake8_path):
+        (flake8_path / "example.py").write_text(
             """
-            def misspelled_function(a, b, c):
-                pass
-        """
+def misspelled_function(a, b, c):
+    pass
+"""
         )
-        result = flake8dir.run_flake8()
+        result = flake8_path.run_flake8()
         assert result.exit_code == 0
         assert result.out_lines == []
 
-    def test_disabled(self, flake8dir):
-        flake8dir.make_example_py(
+    def test_disabled(self, flake8_path):
+        (flake8_path / "example.py").write_text(
             """
-            def mispleled_function(a, b, c):
-                pass
-        """
+def mispleled_function(a, b, c):
+    pass
+"""
         )
-        result = flake8dir.run_flake8(["--spellcheck-targets=comments"])
+        result = flake8_path.run_flake8(["--spellcheck-targets=comments"])
         assert result.exit_code == 0
         assert result.out_lines == []
 
 
 class TestName:
-    def test_fail(self, flake8dir):
-        flake8dir.make_example_py(
+    def test_fail(self, flake8_path):
+        (flake8_path / "example.py").write_text(
             """
-            my_varaible_namde = "something"
-            SOMETHIGN = "SOMETHING"
-            SOMETHING_ELS = "SOMETHING"
-        """
+my_varaible_namde = "something"
+SOMETHIGN = "SOMETHING"
+SOMETHING_ELS = "SOMETHING"
+"""
         )
-        result = flake8dir.run_flake8()
+        result = flake8_path.run_flake8()
         assert result.exit_code == 1
         assert result.out_lines == [
-            "./example.py:1:4: SC200 Possibly misspelt word: 'varaible'",
-            "./example.py:1:13: SC200 Possibly misspelt word: 'namde'",
-            "./example.py:2:1: SC200 Possibly misspelt word: 'SOMETHIGN'",
-            "./example.py:3:11: SC200 Possibly misspelt word: 'ELS'",
+            "./example.py:2:4: SC200 Possibly misspelt word: 'varaible'",
+            "./example.py:2:13: SC200 Possibly misspelt word: 'namde'",
+            "./example.py:3:1: SC200 Possibly misspelt word: 'SOMETHIGN'",
+            "./example.py:4:11: SC200 Possibly misspelt word: 'ELS'",
         ]
 
-    def test_pass(self, flake8dir):
-        flake8dir.make_example_py(
+    def test_pass(self, flake8_path):
+        (flake8_path / "example.py").write_text(
             """
-            my_variable_name = "something"
-            SOMETHING = "SOMETHING"
-            SOMETHING_ELSE = "SOMETHING"
-        """
+my_variable_name = "something"
+SOMETHING = "SOMETHING"
+SOMETHING_ELSE = "SOMETHING"
+"""
         )
-        result = flake8dir.run_flake8()
+        result = flake8_path.run_flake8()
         assert result.exit_code == 0
         assert result.out_lines == []
 
-    def test_disabled(self, flake8dir):
-        flake8dir.make_example_py(
+    def test_disabled(self, flake8_path):
+        (flake8_path / "example.py").write_text(
             """
-            my_varaible_namde = "something"
-            SOMETHIGN = "SOMETHING"
-            SOMETHING_ELS = "SOMETHING"
-        """
+my_varaible_namde = "something"
+SOMETHIGN = "SOMETHING"
+SOMETHING_ELS = "SOMETHING"
+"""
         )
-        result = flake8dir.run_flake8(["--spellcheck-targets=comments"])
+        result = flake8_path.run_flake8(["--spellcheck-targets=comments"])
         assert result.exit_code == 0
         assert result.out_lines == []
 
 
 class TestClassDef:
-    def test_fail(self, flake8dir):
-        flake8dir.make_example_py(
+    def test_fail(self, flake8_path):
+        (flake8_path / "example.py").write_text(
             """
-        class FackeClaessName:
-            pass
-        """
+class FackeClaessName:
+    pass
+"""
         )
-        result = flake8dir.run_flake8()
+        result = flake8_path.run_flake8()
         assert result.exit_code == 1
         assert result.out_lines == [
-            "./example.py:1:7: SC200 Possibly misspelt word: 'Facke'",
-            "./example.py:1:12: SC200 Possibly misspelt word: 'Claess'",
+            "./example.py:2:7: SC200 Possibly misspelt word: 'Facke'",
+            "./example.py:2:12: SC200 Possibly misspelt word: 'Claess'",
         ]
 
-    def test_pass(self, flake8dir):
-        flake8dir.make_example_py(
+    def test_pass(self, flake8_path):
+        (flake8_path / "example.py").write_text(
             """
-            class FakeClassName:
-                pass
-        """
+class FakeClassName:
+    pass
+"""
         )
-        result = flake8dir.run_flake8()
+        result = flake8_path.run_flake8()
         assert result.out_lines == []
 
-    def test_disabled(self, flake8dir):
-        flake8dir.make_example_py(
+    def test_disabled(self, flake8_path):
+        (flake8_path / "example.py").write_text(
             """
-        class FackeClaessName:
-            pass
-        """
+class FackeClaessName:
+    pass
+"""
         )
-        result = flake8dir.run_flake8(["--spellcheck-targets=comments"])
+        result = flake8_path.run_flake8(["--spellcheck-targets=comments"])
         assert result.exit_code == 0
         assert result.out_lines == []
 
 
 class TestLeadingUnderscore:
-    def test_fail(self, flake8dir):
-        flake8dir.make_example_py(
+    def test_fail(self, flake8_path):
+        (flake8_path / "example.py").write_text(
             """
-            def _doSsomething(s):
-                pass
-        """
+def _doSsomething(s):
+    pass
+"""
         )
-        result = flake8dir.run_flake8()
+        result = flake8_path.run_flake8()
         assert result.exit_code == 1
         assert result.out_lines == [
-            "./example.py:1:8: SC200 Possibly misspelt word: 'Ssomething'"
+            "./example.py:2:8: SC200 Possibly misspelt word: 'Ssomething'"
         ]
 
-    def test_pass(self, flake8dir):
-        flake8dir.make_example_py(
+    def test_pass(self, flake8_path):
+        (flake8_path / "example.py").write_text(
             """
-            def _doSomething(s):
-                pass
-        """
+def _doSomething(s):
+    pass
+"""
         )
-        result = flake8dir.run_flake8()
+        result = flake8_path.run_flake8()
         assert result.exit_code == 0
         assert result.out_lines == []
 
 
 class TestOptionalDictionaries:
-    def test_fail(self, flake8dir):
-        flake8dir.make_example_py(
+    def test_fail(self, flake8_path):
+        (flake8_path / "example.py").write_text(
             """
-            from django.http import HttpResponse
-            from django.views.decorators.csrf import csrf_protect
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_protect
 
 
-            @csrf_protect
-            def my_view(request):
-                return HttpResponse("hello world")
-        """
+@csrf_protect
+def my_view(request):
+    return HttpResponse("hello world")
+"""
         )
-        result = flake8dir.run_flake8()
+        result = flake8_path.run_flake8()
         assert result.exit_code == 1
         assert result.out_lines == [
-            "./example.py:2:30: SC200 Possibly misspelt word: 'csrf'",
-            "./example.py:2:42: SC200 Possibly misspelt word: 'csrf'",
-            "./example.py:5:2: SC200 Possibly misspelt word: 'csrf'",
+            "./example.py:3:30: SC200 Possibly misspelt word: 'csrf'",
+            "./example.py:3:42: SC200 Possibly misspelt word: 'csrf'",
+            "./example.py:6:2: SC200 Possibly misspelt word: 'csrf'",
         ]
 
-    def test_success(self, flake8dir):
-        flake8dir.make_example_py(
+    def test_success(self, flake8_path):
+        (flake8_path / "example.py").write_text(
             """
-            from django.http import HttpResponse
-            from django.views.decorators.csrf import csrf_protect
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_protect
 
 
-            @csrf_protect
-            def my_view(request):
-                return HttpResponse("hello world")
-        """
+@csrf_protect
+def my_view(request):
+    return HttpResponse("hello world")
+"""
         )
-        result = flake8dir.run_flake8(["--dictionaries=python,technical,django,en_US"])
+        result = flake8_path.run_flake8(
+            ["--dictionaries=python,technical,django,en_US"]
+        )
         assert result.exit_code == 0
         assert result.out_lines == []
