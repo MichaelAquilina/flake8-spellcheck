@@ -4,7 +4,6 @@ import re
 import sys
 import tokenize
 from argparse import Namespace
-from pathlib import Path
 from string import ascii_lowercase, ascii_uppercase, digits
 from typing import Any, FrozenSet, Iterable, Iterator, List, Tuple, Type
 
