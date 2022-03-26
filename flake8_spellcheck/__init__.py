@@ -94,7 +94,7 @@ def get_code(token_type: int) -> str:
     elif token_type == tokenize.NAME:
         return "SC200"
     else:
-        raise ValueError("Unknown token_type {}".format(token_type))
+        raise ValueError(f"Unknown token_type {token_type}")
 
 
 class SpellCheckPlugin:
@@ -112,14 +112,14 @@ class SpellCheckPlugin:
     ) -> Tuple[FrozenSet[str], FrozenSet[str]]:
         words = set()
         for dictionary_name in options.dictionaries:
-            dictionary_path = DICTIONARY_PATH / "{}.txt".format(dictionary_name)
+            dictionary_path = DICTIONARY_PATH / f"{dictionary_name}.txt"
             data = dictionary_path.read_text()
-            words |= set(w.lower() for w in data.split("\n"))
+            words |= {w.lower() for w in data.split("\n")}
 
         if os.path.exists(options.whitelist):
-            with open(options.whitelist, "r") as fp:
+            with open(options.whitelist) as fp:
                 whitelist = fp.read()
-            whitelist = set(w.lower() for w in whitelist.split("\n"))
+            whitelist = {w.lower() for w in whitelist.split("\n")}
             words |= whitelist
 
         # Hacky way of getting dictionary with symbols stripped
@@ -179,7 +179,7 @@ class SpellCheckPlugin:
                 yield (
                     position[0],
                     position[1],
-                    "{} Possibly misspelt word: '{}'".format(code, token),
+                    f"{code} Possibly misspelt word: '{token}'",
                     type(self),
                 )
 
@@ -226,8 +226,7 @@ class SpellCheckPlugin:
         else:
             return
 
-        for error_tuple in self._detect_errors(tokens, use_symbols, token_info.type):
-            yield error_tuple
+        yield from self._detect_errors(tokens, use_symbols, token_info.type)
 
 
 __all__ = ("__version__", "SpellCheckPlugin")
