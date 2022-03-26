@@ -81,8 +81,8 @@ you'll need to make sure the files are sorted before your PR can be merged.
 Developing
 ----------
 
-* Run `pip install -r dev-requirements.txt`
-* Install `pre-commit` and run `pre-commit install --install-hooks`
+* Run ``pip install -r dev-requirements.txt``
+* Install ``pre-commit`` and run ``pre-commit install --install-hooks``
 
 
 .. |CircleCI| image:: https://circleci.com/gh/MichaelAquilina/flake8-spellcheck.svg?style=svg
