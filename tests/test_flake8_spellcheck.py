@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from textwrap import dedent
+
 import pytest
 
 from flake8_spellcheck import is_number, parse_camel_case, parse_snake_case
@@ -45,11 +47,13 @@ def test_is_number(value, result):
 
 def test_python_words(flake8_path):
     (flake8_path / "example.py").write_text(
-        """
-id = str(4)
-if isinstance(id, int):
-    dict(id=id)
-"""
+        dedent(
+            """
+            id = str(4)
+            if isinstance(id, int):
+                dict(id=id)
+            """
+        )
     )
     result = flake8_path.run_flake8()
     assert result.out_lines == []
@@ -58,10 +62,12 @@ if isinstance(id, int):
 class TestComments:
     def test_fail(self, flake8_path):
         (flake8_path / "example.py").write_text(
-            """
-# dont "make" b4d c8omm3nts
-foo = "bar"
-"""
+            dedent(
+                """
+                # dont "make" b4d c8omm3nts
+                foo = "bar"
+                """
+            )
         )
         result = flake8_path.run_flake8()
         assert result.exit_code == 1
@@ -73,20 +79,24 @@ foo = "bar"
 
     def test_pass(self, flake8_path):
         (flake8_path / "example.py").write_text(
-            """
-# don't "make" 'bad' comments
-foo = "bar"
-"""
+            dedent(
+                """
+                # don't "make" 'bad' comments
+                foo = "bar"
+                """
+            )
         )
         result = flake8_path.run_flake8()
         assert result.out_lines == []
 
     def test_disabled(self, flake8_path):
         (flake8_path / "example.py").write_text(
-            """
-# dont "make" b4d c8omm3nts
-foo = "bar"
-"""
+            dedent(
+                """
+                # dont "make" b4d c8omm3nts
+                foo = "bar"
+                """
+            )
         )
         result = flake8_path.run_flake8(["--spellcheck-targets=names"])
         assert result.exit_code == 0
@@ -107,11 +117,13 @@ foo = "bar"
     # Regression test for github.com/MichaelAquilina/flake8-spellcheck/issues/34
     def test_empty_comment(self, flake8_path):
         (flake8_path / "example.py").write_text(
-            """
-# the empty comment below should not fail
-#
-# hello world
-"""
+            dedent(
+                """
+                # the empty comment below should not fail
+                #
+                # hello world
+                """
+            )
         )
         result = flake8_path.run_flake8()
         assert result.out_lines == []
@@ -119,10 +131,12 @@ foo = "bar"
     # Regression test for https://github.com/MichaelAquilina/flake8-spellcheck/issues/36
     def test_type_and_noqa(self, flake8_path):
         (flake8_path / "example.py").write_text(
-            """
-# the comment below should not fail on `W503` or `W504`  # noqa: SC100
-foo = []  # type: ignore  # noqa: W503  # noqa: W504
-"""
+            dedent(
+                """
+                # the comment below should not fail on `W503` or `W504`  # noqa: SC100
+                foo = []  # type: ignore  # noqa: W503  # noqa: W504
+                """
+            )
         )
         result = flake8_path.run_flake8()
         assert result.out_lines == []
@@ -130,11 +144,13 @@ foo = []  # type: ignore  # noqa: W503  # noqa: W504
     # Regression test for github.com/MichaelAquilina/flake8-spellcheck/issues/40
     def test_pure_number_char_comment(self, flake8_path):
         (flake8_path / "example.py").write_text(
-            """
-# the comment below should not fail
-##########
-# hello world
-"""
+            dedent(
+                """
+                # the comment below should not fail
+                ##########
+                # hello world
+                """
+            )
         )
         result = flake8_path.run_flake8()
         assert result.out_lines == []
@@ -143,14 +159,16 @@ foo = []  # type: ignore  # noqa: W503  # noqa: W504
 class TestFunctionDef:
     def test_apostrophe(self, flake8_path):
         (flake8_path / "example.py").write_text(
-            """
-def dont_fail(a):
-    return a + 2
+            dedent(
+                """
+                def dont_fail(a):
+                    return a + 2
 
 
-def cant_fail(b):
-    return b * 4
-"""
+                def cant_fail(b):
+                    return b * 4
+                """
+            )
         )
         result = flake8_path.run_flake8()
         assert result.exit_code == 0
@@ -158,10 +176,12 @@ def cant_fail(b):
 
     def test_apostrophe_ending_with_s(self, flake8_path):
         (flake8_path / "example.py").write_text(
-            """
-def request_classs(a, b, c):
-    pass
-"""
+            dedent(
+                """
+                def request_classs(a, b, c):
+                    pass
+                """
+            )
         )
         result = flake8_path.run_flake8()
         assert result.exit_code == 1
@@ -171,10 +191,12 @@ def request_classs(a, b, c):
 
     def test_fail(self, flake8_path):
         (flake8_path / "example.py").write_text(
-            """
-def mispleled_function(a, b, c):
-    pass
-"""
+            dedent(
+                """
+                def mispleled_function(a, b, c):
+                    pass
+                """
+            )
         )
         result = flake8_path.run_flake8()
         assert result.exit_code == 1
@@ -184,10 +206,12 @@ def mispleled_function(a, b, c):
 
     def test_pass(self, flake8_path):
         (flake8_path / "example.py").write_text(
-            """
-def misspelled_function(a, b, c):
-    pass
-"""
+            dedent(
+                """
+                def misspelled_function(a, b, c):
+                    pass
+                """
+            )
         )
         result = flake8_path.run_flake8()
         assert result.exit_code == 0
@@ -195,10 +219,12 @@ def misspelled_function(a, b, c):
 
     def test_disabled(self, flake8_path):
         (flake8_path / "example.py").write_text(
-            """
-def mispleled_function(a, b, c):
-    pass
-"""
+            dedent(
+                """
+                def mispleled_function(a, b, c):
+                    pass
+                """
+            )
         )
         result = flake8_path.run_flake8(["--spellcheck-targets=comments"])
         assert result.exit_code == 0
@@ -208,11 +234,13 @@ def mispleled_function(a, b, c):
 class TestName:
     def test_fail(self, flake8_path):
         (flake8_path / "example.py").write_text(
-            """
-my_varaible_namde = "something"
-SOMETHIGN = "SOMETHING"
-SOMETHING_ELS = "SOMETHING"
-"""
+            dedent(
+                """
+                my_varaible_namde = "something"
+                SOMETHIGN = "SOMETHING"
+                SOMETHING_ELS = "SOMETHING"
+                """
+            )
         )
         result = flake8_path.run_flake8()
         assert result.exit_code == 1
@@ -225,11 +253,13 @@ SOMETHING_ELS = "SOMETHING"
 
     def test_pass(self, flake8_path):
         (flake8_path / "example.py").write_text(
-            """
-my_variable_name = "something"
-SOMETHING = "SOMETHING"
-SOMETHING_ELSE = "SOMETHING"
-"""
+            dedent(
+                """
+                my_variable_name = "something"
+                SOMETHING = "SOMETHING"
+                SOMETHING_ELSE = "SOMETHING"
+                """
+            )
         )
         result = flake8_path.run_flake8()
         assert result.exit_code == 0
@@ -237,11 +267,13 @@ SOMETHING_ELSE = "SOMETHING"
 
     def test_disabled(self, flake8_path):
         (flake8_path / "example.py").write_text(
-            """
-my_varaible_namde = "something"
-SOMETHIGN = "SOMETHING"
-SOMETHING_ELS = "SOMETHING"
-"""
+            dedent(
+                """
+                my_varaible_namde = "something"
+                SOMETHIGN = "SOMETHING"
+                SOMETHING_ELS = "SOMETHING"
+                """
+            )
         )
         result = flake8_path.run_flake8(["--spellcheck-targets=comments"])
         assert result.exit_code == 0
@@ -251,10 +283,12 @@ SOMETHING_ELS = "SOMETHING"
 class TestClassDef:
     def test_fail(self, flake8_path):
         (flake8_path / "example.py").write_text(
-            """
-class FackeClaessName:
-    pass
-"""
+            dedent(
+                """
+                class FackeClaessName:
+                    pass
+                """
+            )
         )
         result = flake8_path.run_flake8()
         assert result.exit_code == 1
@@ -265,20 +299,24 @@ class FackeClaessName:
 
     def test_pass(self, flake8_path):
         (flake8_path / "example.py").write_text(
-            """
-class FakeClassName:
-    pass
-"""
+            dedent(
+                """
+                class FakeClassName:
+                    pass
+                """
+            )
         )
         result = flake8_path.run_flake8()
         assert result.out_lines == []
 
     def test_disabled(self, flake8_path):
         (flake8_path / "example.py").write_text(
-            """
-class FackeClaessName:
-    pass
-"""
+            dedent(
+                """
+                class FackeClaessName:
+                    pass
+                """
+            )
         )
         result = flake8_path.run_flake8(["--spellcheck-targets=comments"])
         assert result.exit_code == 0
@@ -288,10 +326,12 @@ class FackeClaessName:
 class TestLeadingUnderscore:
     def test_fail(self, flake8_path):
         (flake8_path / "example.py").write_text(
-            """
-def _doSsomething(s):
-    pass
-"""
+            dedent(
+                """
+                def _doSsomething(s):
+                    pass
+                """
+            )
         )
         result = flake8_path.run_flake8()
         assert result.exit_code == 1
@@ -301,10 +341,12 @@ def _doSsomething(s):
 
     def test_pass(self, flake8_path):
         (flake8_path / "example.py").write_text(
-            """
-def _doSomething(s):
-    pass
-"""
+            dedent(
+                """
+                def _doSomething(s):
+                    pass
+                """
+            )
         )
         result = flake8_path.run_flake8()
         assert result.exit_code == 0
@@ -314,15 +356,17 @@ def _doSomething(s):
 class TestOptionalDictionaries:
     def test_fail(self, flake8_path):
         (flake8_path / "example.py").write_text(
-            """
-from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_protect
+            dedent(
+                """
+                from django.http import HttpResponse
+                from django.views.decorators.csrf import csrf_protect
 
 
-@csrf_protect
-def my_view(request):
-    return HttpResponse("hello world")
-"""
+                @csrf_protect
+                def my_view(request):
+                    return HttpResponse("hello world")
+                """
+            )
         )
         result = flake8_path.run_flake8()
         assert result.exit_code == 1
@@ -334,15 +378,17 @@ def my_view(request):
 
     def test_success(self, flake8_path):
         (flake8_path / "example.py").write_text(
-            """
-from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_protect
+            dedent(
+                """
+                from django.http import HttpResponse
+                from django.views.decorators.csrf import csrf_protect
 
 
-@csrf_protect
-def my_view(request):
-    return HttpResponse("hello world")
-"""
+                @csrf_protect
+                def my_view(request):
+                    return HttpResponse("hello world")
+                """
+            )
         )
         result = flake8_path.run_flake8(
             ["--dictionaries=python,technical,django,en_US"]

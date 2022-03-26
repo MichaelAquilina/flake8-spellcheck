@@ -1,6 +1,6 @@
 import setuptools
 
-requires = ["flake8 > 3.0.0", 'importlib-resources>=3;python_version<"3.7"']
+requires = ["flake8 > 3.0.0"]
 
 with open("README.rst") as fp:
     long_description = fp.read()

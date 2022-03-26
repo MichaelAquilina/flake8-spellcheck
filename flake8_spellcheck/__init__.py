@@ -1,9 +1,9 @@
 import enum
 import os
 import re
-import sys
 import tokenize
 from argparse import Namespace
+from pathlib import Path
 from string import ascii_lowercase, ascii_uppercase, digits
 from typing import Any, FrozenSet, Iterable, Iterator, List, Tuple, Type
 
@@ -12,11 +12,7 @@ from flake8.options.manager import OptionManager
 from .version import version as __version__
 
 NOQA_REGEX = re.compile(r"#[\s]*noqa:[\s]*[\D]+[\d]+")
-
-if sys.version_info >= (3, 7):
-    from importlib.resources import read_text
-else:
-    from importlib_resources import read_text  # noqa
+DICTIONARY_PATH = Path(__file__).parent
 
 
 LintError = Tuple[int, int, str, Type["SpellCheckPlugin"]]
@@ -115,8 +111,9 @@ class SpellCheckPlugin:
         cls, options: Namespace
     ) -> Tuple[FrozenSet[str], FrozenSet[str]]:
         words = set()
-        for dictionary in ("{}.txt".format(d) for d in options.dictionaries):
-            data = read_text(__name__, dictionary)
+        for dictionary_name in options.dictionaries:
+            dictionary_path = DICTIONARY_PATH / "{}.txt".format(dictionary_name)
+            data = dictionary_path.read_text()
             words |= set(w.lower() for w in data.split("\n"))
 
         if os.path.exists(options.whitelist):
