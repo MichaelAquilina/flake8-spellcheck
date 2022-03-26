@@ -1,81 +1,95 @@
 ---
+version: 2.1
 
-version: 2
-
-test: &test
-  steps:
-    - checkout
-    - run:
-        name: install python dependencies
-        command: pip install -r dev-requirements.txt
-    - run:
-        name: install self
-        command: pip install .
-    - run:
-        name: run pytest
-        command: pytest
+executors:
+  linters:
+    docker:
+      - image: "python:3.10-alpine"
+  python310:
+    docker:
+      - image: "python:3.10"
+  python39:
+    docker:
+      - image: "python:3.9"
+  python38:
+    docker:
+      - image: "python:3.8"
+  python37:
+    docker:
+      - image: "python:3.7"
 
 
 jobs:
   lint:
-    docker:
-      - image: "python:3.8"
+    parameters:
+      executor_name:
+        type: executor
+    executor: << parameters.executor_name >>
     steps:
+      - run:
+          name: Install requirements
+          command: |
+            apk update
+            apk add ruby=3.0.3-r0 go=1.17.4-r0 git=2.34.1-r0
+      - run:
+          name: Install pre-commit
+          command: pip install pre-commit==2.17.0
       - checkout
       - run:
-          name: Install Lint Requirements
-          command: pip install -r lint-requirements.txt
-      - run:
-          name: flake8
+          name: Generate cache key
           command: |
-            pip install .
-            flake8 flake8_spellcheck tests
+            cp .pre-commit-config.yaml pre-commit-cache-key.txt
+            python --version --version >> pre-commit-cache-key.txt
+      - restore_cache:
+          key: pre-commit-hooks-{{ checksum "pre-commit-cache-key.txt" }}
       - run:
-          name: isort
-          command: isort . --diff -c
+          name: Install hooks
+          command: pre-commit install --install-hooks
+      - save_cache:
+          paths:
+            - ~/.cache/pre-commit
+          key: pre-commit-hooks-{{ checksum "pre-commit-cache-key.txt" }}
       - run:
-          name: black
-          command: black . --check
+          name: Run linters
+          command: pre-commit run --all-files
+
+  test:
+    description: Run Tests for a specific python version
+    parameters:
+      executor_name:
+        type: executor
+    executor: << parameters.executor_name >>
+    working_directory: ~/project
+    steps:
+      - checkout:
+          path: ~/project
       - run:
-          name: check word dictionaries are sorted
-          command: ./check-sorting.sh
+          name: install python dependencies
+          command: pip install -r dev-requirements.txt
       - run:
-          name: yamllint
-          command: yamllint .
-
-  test-3.10:
-    docker:
-      - image: "python:3.10"
-    <<: *test
-
-  test-3.9:
-    docker:
-      - image: "python:3.9"
-    <<: *test
-
-  test-3.8:
-    docker:
-      - image: "python:3.8"
-    <<: *test
-
-  test-3.7:
-    docker:
-      - image: "python:3.7"
-    <<: *test
-
-  test-3.6:
-    docker:
-      - image: "python:3.6"
-    <<: *test
+          name: install self
+          command: pip install .
+      - run:
+          name: run pytest
+          command: pytest
 
 
 workflows:
   version: 2
   spellcheck_test:
     jobs:
-      - lint
-      - test-3.6
-      - test-3.7
-      - test-3.8
-      - test-3.9
-      - test-3.10
+      - lint:
+          name: Run Linters
+          executor_name: linters
+      - test:
+          name: Run tests - python 3.7
+          executor_name: python37
+      - test:
+          name: Run tests - python 3.8
+          executor_name: python38
+      - test:
+          name: Run tests - python 3.9
+          executor_name: python39
+      - test:
+          name: Run tests - python 3.10
+          executor_name: python310

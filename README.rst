@@ -78,6 +78,12 @@ Before you submit a PR, it is recommended to run ``check-sorting.sh`` in the roo
 to verify that all the dictionary files are still sorted correctly. Sorting is enforced by CI, so
 you'll need to make sure the files are sorted before your PR can be merged.
 
+Developing
+----------
+
+* Run `pip install -r dev-requirements.txt`
+* Install `pre-commit` and run `pre-commit install --install-hooks`
+
 
 .. |CircleCI| image:: https://circleci.com/gh/MichaelAquilina/flake8-spellcheck.svg?style=svg
    :target: https://circleci.com/gh/MichaelAquilina/flake8-spellcheck
