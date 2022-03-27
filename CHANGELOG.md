@@ -1,6 +1,10 @@
 Flake8 Spellcheck Changelog
 ===========================
 
+0.27.0
+------
+* Use poetry as a build backend
+
 0.26.0
 ------
 * Drop support for python 3.6

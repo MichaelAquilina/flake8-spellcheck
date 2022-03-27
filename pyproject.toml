@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "flake8-spellcheck"
-version = "1.0.0"
+version = "0.27.0"
 description = "Spellcheck variables, comments and docstrings"
 authors = ["Michael Aquilina <michaelaquilina@gmail.com>"]
 license = "MIT"
