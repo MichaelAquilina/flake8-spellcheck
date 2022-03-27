@@ -131,13 +131,6 @@ workflows:
           name: Run Tests - python 3.10
           executor_name: python310
       - snyk_scan:
-          name: Snyk Scan
-          executor_name: python310
-          monitor_on_build: false
-          filters:
-            branches:
-              ignore: main
-      - snyk_scan:
           name: Snyk Monitor
           executor_name: python310
           monitor_on_build: true
