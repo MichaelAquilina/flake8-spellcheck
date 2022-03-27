@@ -1,9 +1,10 @@
 Flake8 Spellcheck Changelog
 ===========================
 
-0.27.0
+0.28.0
 ------
 * Use poetry as a build backend
+* Skipped a minor version due to git commit mistake
 
 0.26.0
 ------
