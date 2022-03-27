@@ -1,6 +1,9 @@
 ---
 version: 2.1
 
+orbs:
+  snyk: snyk/snyk@1.1.2
+
 parameters:
   poetry-version:
     type: string
@@ -75,6 +78,22 @@ jobs:
           name: Run tests
           command: poetry run pytest
 
+  snyk_scan:
+    description: Run with Snyk to check for vulnerability and license issues
+    parameters:
+      executor_name:
+        type: executor
+      monitor_on_build:
+        type: boolean
+    executor: << parameters.executor_name >>
+    working_directory: ~/project
+    steps:
+      - checkout:
+          path: ~/project
+      - snyk/scan:
+          fail-on-issues: true
+          monitor-on-build: << parameters.monitor_on_build >>
+
 
 workflows:
   version: 2
@@ -92,3 +111,17 @@ workflows:
       - test:
           name: Run tests - python 3.10
           executor_name: python310
+      - snyk_scan:
+          name: Snyk Scan
+          executor_name: python310
+          monitor_on_build: false
+          filters:
+            branches:
+              ignore: main
+      - snyk_scan:
+          name: Snyk Monitor
+          executor_name: python310
+          monitor_on_build: true
+          filters:
+            branches:
+              only: main
