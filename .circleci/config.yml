@@ -146,5 +146,9 @@ workflows:
             - Snyk Monitor
             - Run Linters
           filters:
+            # ignore any commit on any branch by default
             branches:
-              only: main
+              ignore: /.*/
+            # Only run when a semver is tagged
+            tags:
+              only: /^\d+\.\d+\.\d+$/
