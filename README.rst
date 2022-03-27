@@ -81,7 +81,7 @@ you'll need to make sure the files are sorted before your PR can be merged.
 Developing
 ----------
 
-* Install [poetry](https://github.com/python-poetry)
+* Install `poetry <https://github.com/python-poetry>`__
 * Run ``poetry install``
 * Install ``pre-commit`` and run ``pre-commit install --install-hooks``
 
