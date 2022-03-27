@@ -1,9 +1,34 @@
+[tool.poetry]
+name = "flake8-spellcheck"
+version = "1.0.0"
+description = "Spellcheck variables, comments and docstrings"
+authors = ["Michael Aquilina <michaelaquilina@gmail.com>"]
+license = "MIT"
+readme = "README.rst"
+homepage = "https://github.com/MichaelAquilina/flake8-spellcheck"
+repository = "https://github.cim/MichaelAquilina/flake8-spellcheck"
+keywords = ["lint", "spellcheck", "flake8"]
+include = ["LICENSE"]
+
+[tool.poetry.plugins."flake8.extension"]
+SC = "flake8_spellcheck:SpellCheckPlugin"
+
+[tool.poetry.dependencies]
+python = ">=3.8"
+flake8 = ">3.0.0"
+
+[tool.poetry.dev-dependencies]
+pre-commit = "*"
+pytest = "*"
+pytest-flake8-path = "*"
+
 [build-system]
-requires = ["setuptools >= 44", "wheel >= 0.30", "setuptools_scm[toml]>=3.4"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.black]
-exclude = "version.py"
+line_length=99
+target_version = ["py37"]
 
 [tool.isort]
 line_length=99

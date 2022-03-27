@@ -183,9 +183,7 @@ class TestFunctionDef:
         )
         result = flake8_path.run_flake8()
         assert result.exit_code == 1
-        assert result.out_lines == [
-            "./example.py:2:13: SC200 Possibly misspelt word: 'classs'"
-        ]
+        assert result.out_lines == ["./example.py:2:13: SC200 Possibly misspelt word: 'classs'"]
 
     def test_fail(self, flake8_path):
         (flake8_path / "example.py").write_text(
@@ -198,9 +196,7 @@ class TestFunctionDef:
         )
         result = flake8_path.run_flake8()
         assert result.exit_code == 1
-        assert result.out_lines == [
-            "./example.py:2:5: SC200 Possibly misspelt word: 'mispleled'"
-        ]
+        assert result.out_lines == ["./example.py:2:5: SC200 Possibly misspelt word: 'mispleled'"]
 
     def test_pass(self, flake8_path):
         (flake8_path / "example.py").write_text(
@@ -333,9 +329,7 @@ class TestLeadingUnderscore:
         )
         result = flake8_path.run_flake8()
         assert result.exit_code == 1
-        assert result.out_lines == [
-            "./example.py:2:8: SC200 Possibly misspelt word: 'Ssomething'"
-        ]
+        assert result.out_lines == ["./example.py:2:8: SC200 Possibly misspelt word: 'Ssomething'"]
 
     def test_pass(self, flake8_path):
         (flake8_path / "example.py").write_text(
@@ -388,8 +382,6 @@ class TestOptionalDictionaries:
                 """
             )
         )
-        result = flake8_path.run_flake8(
-            ["--dictionaries=python,technical,django,en_US"]
-        )
+        result = flake8_path.run_flake8(["--dictionaries=python,technical,django,en_US"])
         assert result.exit_code == 0
         assert result.out_lines == []

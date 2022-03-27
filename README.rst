@@ -11,7 +11,7 @@ in the root of your project directory. Each word you add  should be separated by
 
 Spelling is assumed to be in en_US.
 
-This plugin supports python 3.7+
+This plugin supports python 3.8+
 
 Codes
 -----
@@ -81,7 +81,8 @@ you'll need to make sure the files are sorted before your PR can be merged.
 Developing
 ----------
 
-* Run ``pip install -r dev-requirements.txt``
+* Install [poetry](https://github.com/python-poetry)
+* Run ``poetry install``
 * Install ``pre-commit`` and run ``pre-commit install --install-hooks``
 
 

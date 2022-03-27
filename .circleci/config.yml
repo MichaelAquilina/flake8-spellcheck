@@ -1,22 +1,24 @@
 ---
 version: 2.1
 
+parameters:
+  poetry-version:
+    type: string
+    default: "1.1.13"
+
 executors:
   linters:
     docker:
       - image: "python:3.10-alpine"
   python310:
     docker:
-      - image: "python:3.10"
+      - image: "cimg/python:3.10"
   python39:
     docker:
-      - image: "python:3.9"
+      - image: "cimg/python:3.9"
   python38:
     docker:
-      - image: "python:3.8"
-  python37:
-    docker:
-      - image: "python:3.7"
+      - image: "cimg/python:3.8"
 
 
 jobs:
@@ -64,14 +66,14 @@ jobs:
       - checkout:
           path: ~/project
       - run:
-          name: install python dependencies
-          command: pip install -r dev-requirements.txt
+          name: Install Poetry
+          command: poetry self update <<pipeline.parameters.poetry-version>>
       - run:
-          name: install self
-          command: pip install .
+          name: Install dependencies and project in dev mode
+          command: poetry install
       - run:
-          name: run pytest
-          command: pytest
+          name: Run tests
+          command: poetry run pytest
 
 
 workflows:
@@ -81,9 +83,6 @@ workflows:
       - lint:
           name: Run Linters
           executor_name: linters
-      - test:
-          name: Run tests - python 3.7
-          executor_name: python37
       - test:
           name: Run tests - python 3.8
           executor_name: python38
