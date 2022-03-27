@@ -1,4 +1,5 @@
 import enum
+import importlib.metadata
 import os
 import re
 import tokenize
@@ -10,8 +11,6 @@ from tokenize import TokenInfo
 from typing import Any, FrozenSet, Iterable, Iterator, List, Optional, Tuple, Type
 
 from flake8.options.manager import OptionManager
-
-from .version import version as __version__
 
 NOQA_REGEX = re.compile(r"#[\s]*noqa:[\s]*[\D]+[\d]+")
 DICTIONARY_PATH = Path(__file__).parent
@@ -101,7 +100,7 @@ def get_code(token_type: int) -> str:
 
 class SpellCheckPlugin:
     name = "flake8-spellcheck"
-    version = __version__
+    version = importlib.metadata.version(__name__)
 
     spellcheck_targets: FrozenSet[str] = frozenset()
     no_symbols: FrozenSet[str] = frozenset()
@@ -119,9 +118,7 @@ class SpellCheckPlugin:
             self.file_tokens: Iterable[TokenInfo] = file_tokens
 
     @classmethod
-    def load_dictionaries(
-        cls, options: Namespace
-    ) -> Tuple[FrozenSet[str], FrozenSet[str]]:
+    def load_dictionaries(cls, options: Namespace) -> Tuple[FrozenSet[str], FrozenSet[str]]:
         words = set()
         for dictionary_name in options.dictionaries:
             dictionary_path = DICTIONARY_PATH / f"{dictionary_name}.txt"
