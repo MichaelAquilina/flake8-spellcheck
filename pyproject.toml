@@ -41,6 +41,3 @@ disallow_untyped_defs = true
 [[tool.mypy.overrides]]
 module = ["tests.*"]
 ignore_errors = true
-
-[tool.setuptools_scm]
-write_to = "flake8_spellcheck/version.py"
