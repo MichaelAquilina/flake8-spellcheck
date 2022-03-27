@@ -1,6 +1,14 @@
 Flake8 Spellcheck Changelog
 ===========================
 
+0.26.0
+------
+* Drop support for python 3.6
+* Remove dependency on importlib
+* General codebase improvements (Thanks @shaleh and @djmattyg007)
+* Add type annotations
+* Introduce pre-commit and mypy to codebase
+
 0.25.0
 ------
 * Add partial support for pandas dictionaries (Thanks @aaronzipp)
