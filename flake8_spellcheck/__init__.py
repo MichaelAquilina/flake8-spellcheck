@@ -3,9 +3,11 @@ import os
 import re
 import tokenize
 from argparse import Namespace
+from ast import AST
 from pathlib import Path
 from string import ascii_lowercase, ascii_uppercase, digits
-from typing import Any, FrozenSet, Iterable, Iterator, List, Tuple, Type
+from tokenize import TokenInfo
+from typing import Any, FrozenSet, Iterable, Iterator, List, Optional, Tuple, Type
 
 from flake8.options.manager import OptionManager
 
@@ -101,10 +103,20 @@ class SpellCheckPlugin:
     name = "flake8-spellcheck"
     version = __version__
 
+    spellcheck_targets: FrozenSet[str] = frozenset()
+    no_symbols: FrozenSet[str] = frozenset()
+    words: FrozenSet[str] = frozenset()
+
     def __init__(
-        self, tree, filename="(none)", file_tokens: Iterable[tokenize.TokenInfo] = None
-    ):
-        self.file_tokens: Iterable[tokenize.TokenInfo] = file_tokens
+        self,
+        tree: AST,
+        filename: str = "(none)",
+        file_tokens: Optional[Iterable[TokenInfo]] = None,
+    ) -> None:
+        if file_tokens is None:
+            raise ValueError("Plugin requires file_tokens")
+        else:
+            self.file_tokens: Iterable[TokenInfo] = file_tokens
 
     @classmethod
     def load_dictionaries(
@@ -119,8 +131,8 @@ class SpellCheckPlugin:
         if os.path.exists(options.whitelist):
             with open(options.whitelist) as fp:
                 whitelist = fp.read()
-            whitelist = {w.lower() for w in whitelist.split("\n")}
-            words |= whitelist
+            whitelist_data = {w.lower() for w in whitelist.split("\n")}
+            words |= whitelist_data
 
         # Hacky way of getting dictionary with symbols stripped
         no_symbols = set()
@@ -132,7 +144,7 @@ class SpellCheckPlugin:
         return frozenset(words), frozenset(no_symbols)
 
     @classmethod
-    def add_options(cls, parser: OptionManager):
+    def add_options(cls, parser: OptionManager) -> None:
         parser.add_option(
             "--whitelist",
             help="Path to text file containing whitelisted words",

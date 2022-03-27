@@ -5,5 +5,13 @@ build-backend = "setuptools.build_meta"
 [tool.black]
 exclude = "version.py"
 
+[tool.mypy]
+ignore_missing_imports = true
+disallow_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+ignore_errors = true
+
 [tool.setuptools_scm]
 write_to = "flake8_spellcheck/version.py"
