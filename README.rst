@@ -2,7 +2,7 @@
 Flake8 Spellcheck
 =================
 
-|CircleCI| |Black| |PyPi| |Snyk|
+|CircleCI| |Black| |PyPi|
 
 Flake8 Plugin that spellchecks variables, functions, classes and other bits of your python code.
 
@@ -94,6 +94,3 @@ Developing
 
 .. |Black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
    :target: https://github.com/psf/black
-
-.. |Snyk| image:: (https://snyk.io/test/github/MichaelAquilina/flake8-spellcheck/badge.svg
-   :target: https://snyk.io/test/github/MichaelAquilina/flake8-spellcheck
