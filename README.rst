@@ -78,12 +78,14 @@ Before you submit a PR, it is recommended to run ``check-sorting.sh`` in the roo
 to verify that all the dictionary files are still sorted correctly. Sorting is enforced by CI, so
 you'll need to make sure the files are sorted before your PR can be merged.
 
-Developing
-----------
+Development
+-----------
 
 * Install `poetry <https://github.com/python-poetry>`__
 * Run ``poetry install``
-* Install ``pre-commit`` and run ``pre-commit install --install-hooks``
+* Run ``poetry run pre-commit install --install-hooks``
+
+You can run tests with ``poetry run pytest``.
 
 
 .. |CircleCI| image:: https://circleci.com/gh/MichaelAquilina/flake8-spellcheck.svg?style=svg
