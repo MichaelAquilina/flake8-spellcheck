@@ -153,5 +153,5 @@ workflows:
             - Snyk Monitor
             - Run Linters
           filters:
-            tags:
-              only: /^\d+\.\d+\.\d+$/
+            branches:
+              only: main
