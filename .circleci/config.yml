@@ -159,4 +159,4 @@ workflows:
             # Only run this when a commit has been tagged
             # with a semver version
             tags:
-              only: /^\d+\.\d+\.\d+$/
+              only: $CIRCLE_TAG
