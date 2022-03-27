@@ -94,6 +94,25 @@ jobs:
           fail-on-issues: true
           monitor-on-build: << parameters.monitor_on_build >>
 
+  build_and_release:
+    description: Build and release new version of the package to PyPi
+    executor: python310
+    working_directory: ~/project
+    steps:
+      - checkout:
+          path: ~/project
+      - run:
+          name: Install Poetry
+          command: poetry self update <<pipeline.parameters.poetry-version>>
+      - run:
+          name: Configure Poetry PyPi token
+          command: |
+            poetry config pypi-token.pypi ${PYPI_TOKEN}
+      - run:
+          name: Release and Publish to PyPI
+          command: |
+            poetry publish --build --no-interaction
+
 
 workflows:
   version: 2
@@ -103,13 +122,13 @@ workflows:
           name: Run Linters
           executor_name: linters
       - test:
-          name: Run tests - python 3.8
+          name: Run Tests - python 3.8
           executor_name: python38
       - test:
-          name: Run tests - python 3.9
+          name: Run Tests - python 3.9
           executor_name: python39
       - test:
-          name: Run tests - python 3.10
+          name: Run Tests - python 3.10
           executor_name: python310
       - snyk_scan:
           name: Snyk Scan
@@ -125,3 +144,16 @@ workflows:
           filters:
             branches:
               only: main
+      - build_and_release:
+          name: Build and Release a new version to PyPI
+          requires:
+            - Run Tests - python 3.10
+            - Run Tests - python 3.9
+            - Run Tests - python 3.8
+            - Snyk Monitor
+            - Run Linters
+          filters:
+            branches:
+              only: main
+            tags:
+              only: ".*"
