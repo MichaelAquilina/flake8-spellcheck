@@ -38,6 +38,7 @@ dataclass
 dataclasses
 datetime
 dateutil
+dedent
 deepcopy
 defaultdict
 dict
@@ -152,6 +153,7 @@ subprocess
 sys
 tarfile
 tempfile
+textwrap
 timedelta
 traceback
 tzinfo

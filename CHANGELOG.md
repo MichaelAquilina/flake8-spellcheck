@@ -1,6 +1,19 @@
 Flake8 Spellcheck Changelog
 ===========================
 
+0.28.0
+------
+* Use poetry as a build backend
+* Skipped a minor version due to git commit mistake
+
+0.26.0
+------
+* Drop support for python 3.6
+* Remove dependency on importlib
+* General codebase improvements (Thanks @shaleh and @djmattyg007)
+* Add type annotations
+* Introduce pre-commit and mypy to codebase
+
 0.25.0
 ------
 * Add partial support for pandas dictionaries (Thanks @aaronzipp)

@@ -11,7 +11,7 @@ in the root of your project directory. Each word you add should be separated by 
 
 Spelling is assumed to be in en_US.
 
-This plugin supports python 3.6+
+This plugin supports python 3.8+
 
 Codes
 =====
@@ -109,6 +109,15 @@ adding those word(s) to the appropriate dictionaries:
 Before you submit a PR, it is recommended to run ``check-sorting.sh`` in the root of this repository,
 to verify that all the dictionary files are still sorted correctly. Sorting is enforced by CI, so
 you'll need to make sure the files are sorted before your PR can be merged.
+
+Development
+-----------
+
+* Install `poetry <https://github.com/python-poetry>`__
+* Run ``poetry install``
+* Run ``poetry run pre-commit install --install-hooks``
+
+You can run tests with ``poetry run pytest``.
 
 
 .. |CircleCI| image:: https://circleci.com/gh/MichaelAquilina/flake8-spellcheck.svg?style=svg

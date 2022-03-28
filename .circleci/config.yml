@@ -1,81 +1,154 @@
 ---
+version: 2.1
 
-version: 2
+orbs:
+  snyk: snyk/snyk@1.1.2
 
-test: &test
-  steps:
-    - checkout
-    - run:
-        name: install python dependencies
-        command: pip install -r dev-requirements.txt
-    - run:
-        name: install self
-        command: pip install .
-    - run:
-        name: run pytest
-        command: pytest
+parameters:
+  poetry-version:
+    type: string
+    default: "1.1.13"
+
+executors:
+  linters:
+    docker:
+      - image: "python:3.10-alpine"
+  python310:
+    docker:
+      - image: "cimg/python:3.10"
+  python39:
+    docker:
+      - image: "cimg/python:3.9"
+  python38:
+    docker:
+      - image: "cimg/python:3.8"
 
 
 jobs:
   lint:
-    docker:
-      - image: "python:3.8"
+    parameters:
+      executor_name:
+        type: executor
+    executor: << parameters.executor_name >>
     steps:
+      - run:
+          name: Install requirements
+          command: |
+            apk update
+            apk add ruby=3.0.3-r0 go=1.17.4-r0 git=2.34.1-r0
+      - run:
+          name: Install pre-commit
+          command: pip install pre-commit==2.17.0
       - checkout
       - run:
-          name: Install Lint Requirements
-          command: pip install -r lint-requirements.txt
-      - run:
-          name: flake8
+          name: Generate cache key
           command: |
-            pip install .
-            flake8 flake8_spellcheck tests
+            cp .pre-commit-config.yaml pre-commit-cache-key.txt
+            python --version --version >> pre-commit-cache-key.txt
+      - restore_cache:
+          key: pre-commit-hooks-{{ checksum "pre-commit-cache-key.txt" }}
       - run:
-          name: isort
-          command: isort . --diff -c
+          name: Install hooks
+          command: pre-commit install --install-hooks
+      - save_cache:
+          paths:
+            - ~/.cache/pre-commit
+          key: pre-commit-hooks-{{ checksum "pre-commit-cache-key.txt" }}
       - run:
-          name: black
-          command: black . --check
+          name: Run linters
+          command: pre-commit run --all-files
+
+  test:
+    description: Run Tests for a specific python version
+    parameters:
+      executor_name:
+        type: executor
+    executor: << parameters.executor_name >>
+    working_directory: ~/project
+    steps:
+      - checkout:
+          path: ~/project
       - run:
-          name: check word dictionaries are sorted
-          command: ./check-sorting.sh
+          name: Install Poetry
+          command: poetry self update <<pipeline.parameters.poetry-version>>
       - run:
-          name: yamllint
-          command: yamllint .
+          name: Install dependencies and project in dev mode
+          command: poetry install
+      - run:
+          name: Run tests
+          command: poetry run pytest
 
-  test-3.10:
-    docker:
-      - image: "python:3.10"
-    <<: *test
+  snyk_scan:
+    description: Run with Snyk to check for vulnerability and license issues
+    parameters:
+      executor_name:
+        type: executor
+      monitor_on_build:
+        type: boolean
+    executor: << parameters.executor_name >>
+    working_directory: ~/project
+    steps:
+      - checkout:
+          path: ~/project
+      - snyk/scan:
+          fail-on-issues: true
+          monitor-on-build: << parameters.monitor_on_build >>
 
-  test-3.9:
-    docker:
-      - image: "python:3.9"
-    <<: *test
-
-  test-3.8:
-    docker:
-      - image: "python:3.8"
-    <<: *test
-
-  test-3.7:
-    docker:
-      - image: "python:3.7"
-    <<: *test
-
-  test-3.6:
-    docker:
-      - image: "python:3.6"
-    <<: *test
+  build_and_release:
+    description: Build and release new version of the package to PyPi
+    executor: python310
+    working_directory: ~/project
+    steps:
+      - checkout:
+          path: ~/project
+      - run:
+          name: Install Poetry
+          command: poetry self update <<pipeline.parameters.poetry-version>>
+      - run:
+          name: Configure Poetry PyPi token
+          command: |
+            poetry config pypi-token.pypi ${PYPI_TOKEN}
+      - run:
+          name: Release and Publish to PyPI
+          command: |
+            poetry publish --build --no-interaction
 
 
 workflows:
   version: 2
   spellcheck_test:
     jobs:
-      - lint
-      - test-3.6
-      - test-3.7
-      - test-3.8
-      - test-3.9
-      - test-3.10
+      - lint:
+          name: Run Linters
+          executor_name: linters
+      - test:
+          name: Run Tests - python 3.8
+          executor_name: python38
+      - test:
+          name: Run Tests - python 3.9
+          executor_name: python39
+      - test:
+          name: Run Tests - python 3.10
+          executor_name: python310
+      - snyk_scan:
+          name: Snyk Monitor
+          executor_name: python310
+          monitor_on_build: true
+          filters:
+            branches:
+              only: main
+      - build_and_release:
+          name: Build and Release a new version to PyPI
+          requires:
+            - Run Tests - python 3.10
+            - Run Tests - python 3.9
+            - Run Tests - python 3.8
+            - Snyk Monitor
+            - Run Linters
+          filters:
+            # ignore any commit on any branch by default
+            branches:
+              ignore: /.*/
+            # Only run when a semver is tagged
+            tags:
+              only: /^\d+\.\d+\.\d+$/

@@ -1,19 +1,18 @@
 import enum
+import importlib.metadata
 import logging
 import os
 import re
-import sys
 import tokenize
 from argparse import Namespace
+from ast import AST
 from itertools import chain
 from pathlib import Path
 from string import ascii_lowercase, ascii_uppercase, digits
+from tokenize import TokenInfo
 from typing import Any, FrozenSet, Iterable, Iterator, List, Optional, Tuple, Type
 
 from flake8.options.manager import OptionManager
-
-from .version import version as __version__
-
 
 logger = logging.getLogger(__name__)
 
@@ -22,16 +21,6 @@ NOQA_REGEX = re.compile(r"#[\s]*noqa:[\s]*[\D]+[\d]+")
 
 DICTIONARY_PATH = Path(__file__).parent
 DEFAULT_DICTIONARY_NAMES = ("en_US", "python", "technical")
-
-
-LintError = Tuple[int, int, str, Type["SpellCheckPlugin"]]
-Position = Tuple[int, int]
-
-
-if sys.version_info >= (3, 7):
-    from importlib.resources import read_text
-else:
-    from importlib_resources import read_text  # noqa
 
 
 LintError = Tuple[int, int, str, Type["SpellCheckPlugin"]]
@@ -113,7 +102,7 @@ def get_code(token_type: int) -> str:
     elif token_type == tokenize.NAME:
         return "SC200"
     else:
-        raise ValueError("Unknown token_type {}".format(token_type))
+        raise ValueError(f"Unknown token_type {token_type}")
 
 
 def find_allowlist_path(options: Namespace) -> Optional[Path]:
@@ -160,17 +149,25 @@ def flatten_dictionary_add_list(options: Namespace) -> Iterator[str]:
 
 class SpellCheckPlugin:
     name = "flake8-spellcheck"
-    version = __version__
+    version = importlib.metadata.version(__name__)
+
+    spellcheck_targets: FrozenSet[str] = frozenset()
+    no_symbols: FrozenSet[str] = frozenset()
+    words: FrozenSet[str] = frozenset()
 
     def __init__(
-        self, tree, filename="(none)", file_tokens: Iterable[tokenize.TokenInfo] = None
-    ):
-        self.file_tokens: Iterable[tokenize.TokenInfo] = file_tokens
+        self,
+        tree: AST,
+        filename: str = "(none)",
+        file_tokens: Optional[Iterable[TokenInfo]] = None,
+    ) -> None:
+        if file_tokens is None:
+            raise ValueError("Plugin requires file_tokens")
+        else:
+            self.file_tokens: Iterable[TokenInfo] = file_tokens
 
     @classmethod
-    def load_dictionaries(
-        cls, options: Namespace
-    ) -> Tuple[FrozenSet[str], FrozenSet[str]]:
+    def load_dictionaries(cls, options: Namespace) -> Tuple[FrozenSet[str], FrozenSet[str]]:
         words = set()
 
         dictionary_names: Iterable[str]
@@ -183,7 +180,9 @@ class SpellCheckPlugin:
             if options.spellcheck_disable_default_dictionaries:
                 dictionary_names = flatten_dictionary_add_list(options)
             else:
-                dictionary_names = chain(DEFAULT_DICTIONARY_NAMES, flatten_dictionary_add_list(options))
+                dictionary_names = chain(
+                    DEFAULT_DICTIONARY_NAMES, flatten_dictionary_add_list(options)
+                )
 
         for dictionary_name in dictionary_names:
             dictionary_path = DICTIONARY_PATH / "{}.txt".format(dictionary_name)
@@ -191,7 +190,11 @@ class SpellCheckPlugin:
                 dictionary_data = dictionary_path.read_text()
                 words |= set(word.lower() for word in dictionary_data.split("\n"))
             else:
-                logger.error("ERROR: Supplied built-in dictionary '{}' does not exist.".format(dictionary_name))
+                logger.error(
+                    "ERROR: Supplied built-in dictionary '{}' does not exist.".format(
+                        dictionary_name
+                    )
+                )
 
         allowlist_path: Optional[Path] = find_allowlist_path(options)
         if allowlist_path:
@@ -208,7 +211,7 @@ class SpellCheckPlugin:
         return frozenset(words), frozenset(no_symbols)
 
     @classmethod
-    def add_options(cls, parser: OptionManager):
+    def add_options(cls, parser: OptionManager) -> None:
         parser.add_option(
             "--spellcheck-allowlist",
             help="Path to text file containing a custom list of allowed words.",
@@ -272,7 +275,7 @@ class SpellCheckPlugin:
                 yield (
                     position[0],
                     position[1],
-                    "{} Possibly misspelt word: '{}'".format(code, token),
+                    f"{code} Possibly misspelt word: '{token}'",
                     type(self),
                 )
 
@@ -319,8 +322,7 @@ class SpellCheckPlugin:
         else:
             return
 
-        for error_tuple in self._detect_errors(tokens, use_symbols, token_info.type):
-            yield error_tuple
+        yield from self._detect_errors(tokens, use_symbols, token_info.type)
 
 
 __all__ = ("__version__", "SpellCheckPlugin")
