@@ -51,8 +51,3 @@ repos:
     hooks:
       - id: yamllint
         args: ["--strict"]
-  - repo: https://github.com/asottile/blacken-docs
-    rev: v1.12.1
-    hooks:
-      - id: blacken-docs
-        additional_dependencies: [black==22.1]
