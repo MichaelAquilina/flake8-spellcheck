@@ -35,6 +35,7 @@ jobs:
           name: Install requirements
           command: |
             apk update
+            apk add gcc libc-dev linux-headers zlib zlib-dev
             apk add ruby=3.0.3-r0 git=2.34.1-r0
       - run:
           name: Install pre-commit
