@@ -51,7 +51,3 @@ repos:
     hooks:
       - id: yamllint
         args: ["--strict"]
-  - repo: https://github.com/zricethezav/gitleaks
-    rev: v8.2.7
-    hooks:
-      - id: gitleaks
