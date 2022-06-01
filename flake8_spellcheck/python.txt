@@ -151,8 +151,8 @@ str
 strftime
 strptime
 struct
-subprocess
 subcommand
+subprocess
 sys
 tarfile
 tempfile
