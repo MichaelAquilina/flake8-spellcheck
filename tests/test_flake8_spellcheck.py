@@ -693,5 +693,3 @@ def test_magic_methods(flake8_path):
     )
     result = flake8_path.run_flake8()
     assert result.out_lines == []
-
-
