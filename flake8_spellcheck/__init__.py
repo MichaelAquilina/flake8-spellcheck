@@ -1,10 +1,12 @@
 import enum
 import importlib.metadata
+import logging
 import os
 import re
 import tokenize
 from argparse import Namespace
 from ast import AST
+from itertools import chain
 from pathlib import Path
 from string import ascii_lowercase, ascii_uppercase, digits
 from tokenize import TokenInfo
@@ -12,8 +14,13 @@ from typing import Any, FrozenSet, Iterable, Iterator, List, Optional, Tuple, Ty
 
 from flake8.options.manager import OptionManager
 
+logger = logging.getLogger(__name__)
+
+
 NOQA_REGEX = re.compile(r"#[\s]*noqa:[\s]*[\D]+[\d]+")
+
 DICTIONARY_PATH = Path(__file__).parent
+DEFAULT_DICTIONARY_NAMES = ("en_US", "python", "technical")
 
 
 LintError = Tuple[int, int, str, Type["SpellCheckPlugin"]]
@@ -98,6 +105,48 @@ def get_code(token_type: int) -> str:
         raise ValueError(f"Unknown token_type {token_type}")
 
 
+def find_allowlist_path(options: Namespace) -> Optional[Path]:
+    if options.spellcheck_allowlist:
+        if options.spellcheck_allowlist.exists():
+            return options.spellcheck_allowlist
+        else:
+            logger.error("ERROR: Supplied allowlist file for flake8-spellcheck does not exist.")
+            return None
+    elif options.whitelist:
+        logger.warning(
+            "DEPRECATED: Support for '--whitelist' will be removed in future. Please use '--spellcheck-allowlist' instead."
+        )
+        whitelist_path = Path(options.whitelist)
+        if whitelist_path.exists():
+            return whitelist_path
+        else:
+            logger.error("ERROR: Supplied allowlist file for flake8-spellcheck does not exist.")
+            return None
+
+    default_allowlist_path = Path("spellcheck-allowlist.txt")
+    if default_allowlist_path.exists():
+        return default_allowlist_path
+
+    default_whitelist_path = Path("whitelist.txt")
+    if default_whitelist_path.exists():
+        logger.warning(
+            "DEPRECATED: Support for 'whitelist.txt' will be removed in future. Please use 'spellcheck-allowlist.txt' instead."
+        )
+        return default_whitelist_path
+
+    return None
+
+
+def flatten_dictionary_add_list(options: Namespace) -> Iterator[str]:
+    for identifier in options.spellcheck_add_dictionary:
+        if isinstance(identifier, str):
+            yield identifier
+            continue
+
+        for _id in identifier:
+            yield _id
+
+
 class SpellCheckPlugin:
     name = "flake8-spellcheck"
     version = importlib.metadata.version(__name__)
@@ -120,16 +169,37 @@ class SpellCheckPlugin:
     @classmethod
     def load_dictionaries(cls, options: Namespace) -> Tuple[FrozenSet[str], FrozenSet[str]]:
         words = set()
-        for dictionary_name in options.dictionaries:
-            dictionary_path = DICTIONARY_PATH / f"{dictionary_name}.txt"
-            data = dictionary_path.read_text()
-            words |= {w.lower() for w in data.split("\n")}
 
-        if os.path.exists(options.whitelist):
-            with open(options.whitelist) as fp:
-                whitelist = fp.read()
-            whitelist_data = {w.lower() for w in whitelist.split("\n")}
-            words |= whitelist_data
+        dictionary_names: Iterable[str]
+        if options.dictionaries:
+            logger.warning(
+                "DEPRECATED: Support for '--dictionaries' will be removed in future. Use '--spellcheck-add-dictionary' instead."
+            )
+            dictionary_names = options.dictionaries
+        else:
+            if options.spellcheck_disable_default_dictionaries:
+                dictionary_names = flatten_dictionary_add_list(options)
+            else:
+                dictionary_names = chain(
+                    DEFAULT_DICTIONARY_NAMES, flatten_dictionary_add_list(options)
+                )
+
+        for dictionary_name in dictionary_names:
+            dictionary_path = DICTIONARY_PATH / "{}.txt".format(dictionary_name)
+            if dictionary_path.exists():
+                dictionary_data = dictionary_path.read_text()
+                words |= set(word.lower() for word in dictionary_data.split("\n"))
+            else:
+                logger.error(
+                    "ERROR: Supplied built-in dictionary '{}' does not exist.".format(
+                        dictionary_name
+                    )
+                )
+
+        allowlist_path: Optional[Path] = find_allowlist_path(options)
+        if allowlist_path:
+            allowlist_data = allowlist_path.read_text()
+            words |= set(w.lower() for w in allowlist_data.split("\n"))
 
         # Hacky way of getting dictionary with symbols stripped
         no_symbols = set()
@@ -143,20 +213,37 @@ class SpellCheckPlugin:
     @classmethod
     def add_options(cls, parser: OptionManager) -> None:
         parser.add_option(
-            "--whitelist",
-            help="Path to text file containing whitelisted words",
-            default="whitelist.txt",
+            "--spellcheck-allowlist",
+            help="Path to text file containing a custom list of allowed words.",
+            type=Path,
             parse_from_config=True,
         )
         parser.add_option(
+            "--whitelist",
+            help="(deprecated) Path to text file containing a custom list of allowed words. Use '--spellcheck-allowlist' instead.",
+            parse_from_config=True,
+        )
+        parser.add_option(
+            "--spellcheck-disable-default-dictionaries",
+            help="Don't use the default list of built-in dictionaries. You can still use '--spellcheck-add-dictionary' to select individual built-in dictionaries.",
+            action="store_true",
+            parse_from_config=True,
+        )
+        parser.add_option(
+            "--spellcheck-add-dictionary",
+            help="A built-in dictionary to enable. Pass this flag multiple times to enable multiple dictionaries.",
+            action="append",
+            default=[],
+            parse_from_config=True,
+            comma_separated_list=True,
+        )
+        parser.add_option(
             "--dictionaries",
-            # Unfortunately optparse does not support nargs="+" so we
-            # need to use a command separated list to work round it
-            help="Command separated list of dictionaries to enable",
-            default="en_US,python,technical",
+            help="(deprecated) A comma-separated list of built-in dictionaries to enable. Use '--spellcheck-add-dictionary' instead.",
             comma_separated_list=True,
             parse_from_config=True,
         )
+        # TODO: Convert this to use action=append
         parser.add_option(
             "--spellcheck-targets",
             help="Specify the targets to spellcheck",
