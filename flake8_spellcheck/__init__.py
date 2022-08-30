@@ -116,6 +116,7 @@ class SpellCheckPlugin:
             raise ValueError("Plugin requires file_tokens")
         else:
             self.file_tokens: Iterable[TokenInfo] = file_tokens
+        self.local_words: FrozenSet[str] = frozenset()
 
     @classmethod
     def load_dictionaries(cls, options: Namespace) -> Tuple[FrozenSet[str], FrozenSet[str]]:
@@ -179,9 +180,9 @@ class SpellCheckPlugin:
             test_token = token.lower().strip("'").strip('"')
 
             if use_symbols:
-                valid = test_token in self.words
+                valid = (test_token in self.words) or (test_token in self.local_words)
             else:
-                valid = test_token in self.no_symbols
+                valid = (test_token in self.no_symbols) or (test_token in self.local_words)
 
             # Need a way of matching words without symbols
             if not valid and not is_number(token):
@@ -193,8 +194,21 @@ class SpellCheckPlugin:
                 )
 
     def run(self) -> Iterator[LintError]:
+        self._get_local_words()
         for token_info in self.file_tokens:
             yield from self._parse_token(token_info)
+
+    def _get_local_words(self) -> FrozenSet:
+        """Get files listed after comments # spellchecker:words."""
+        local_words = set()
+        for token_info in self.file_tokens:
+            if (
+                token_info.type == tokenize.COMMENT 
+                and token_info.string.lstrip("#").strip() != ""
+                and token_info.string.lstrip("#").split()[0] == "spellchecker:words"
+            ):
+                local_words |= {w.lower() for w in token_info.string.lstrip("#").split()[1:]}
+        self.local_words = FrozenSet(local_words)
 
     def _is_valid_comment(self, token_info: tokenize.TokenInfo) -> bool:
         return (
