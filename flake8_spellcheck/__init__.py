@@ -203,7 +203,7 @@ class SpellCheckPlugin:
         local_words = set()
         for token_info in self.file_tokens:
             if (
-                token_info.type == tokenize.COMMENT 
+                token_info.type == tokenize.COMMENT
                 and token_info.string.lstrip("#").strip() != ""
                 and token_info.string.lstrip("#").split()[0] == "spellchecker:words"
             ):
