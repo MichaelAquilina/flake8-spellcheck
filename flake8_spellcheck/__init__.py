@@ -194,7 +194,7 @@ class SpellCheckPlugin:
                 )
 
     def run(self) -> Iterator[LintError]:
-        self._get_local_words()
+        self.local_words = self._get_local_words()
         for token_info in self.file_tokens:
             yield from self._parse_token(token_info)
 
@@ -208,7 +208,7 @@ class SpellCheckPlugin:
                 and token_info.string.lstrip("#").split()[0] == "spellchecker:words"
             ):
                 local_words |= {w.lower() for w in token_info.string.lstrip("#").split()[1:]}
-        self.local_words = FrozenSet(local_words)
+        return FrozenSet(local_words)
 
     def _is_valid_comment(self, token_info: tokenize.TokenInfo) -> bool:
         return (
