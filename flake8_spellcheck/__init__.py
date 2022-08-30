@@ -194,14 +194,15 @@ class SpellCheckPlugin:
                 )
 
     def run(self) -> Iterator[LintError]:
-        self.local_words = self._get_local_words()
-        for token_info in self.file_tokens:
+        file_tokens = list(self.file_tokens)  # we need to copy the iterator in a list
+        self.local_words = self._get_local_words(file_tokens)
+        for token_info in file_tokens:
             yield from self._parse_token(token_info)
 
-    def _get_local_words(self) -> FrozenSet:
+    def _get_local_words(self, file_tokens: List[TokenInfo]) -> FrozenSet:
         """Get files listed after comments # spellchecker:words."""
         local_words = set()
-        for token_info in self.file_tokens:
+        for token_info in file_tokens:
             if (
                 token_info.type == tokenize.COMMENT
                 and token_info.string.lstrip("#").strip() != ""
