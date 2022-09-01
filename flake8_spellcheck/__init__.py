@@ -180,9 +180,11 @@ class SpellCheckPlugin:
             test_token = token.lower().strip("'").strip('"')
 
             if use_symbols:
-                valid = (test_token in self.words) or (test_token in self.local_words)
+                # valid = (test_token in self.words) or (test_token in self.local_words)
+                valid = (test_token in self.words)
             else:
-                valid = (test_token in self.no_symbols) or (test_token in self.local_words)
+                # valid = (test_token in self.no_symbols) or (test_token in self.local_words)
+                valid = (test_token in self.no_symbols)
 
             # Need a way of matching words without symbols
             if not valid and not is_number(token):
@@ -195,7 +197,7 @@ class SpellCheckPlugin:
 
     def run(self) -> Iterator[LintError]:
         file_tokens = list(self.file_tokens)  # we need to copy the iterator in a list
-        self.local_words = self._get_local_words(file_tokens)
+        # self.local_words = self._get_local_words(file_tokens)
         for token_info in file_tokens:
             yield from self._parse_token(token_info)
 
