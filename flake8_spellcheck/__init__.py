@@ -14,7 +14,7 @@ from flake8.options.manager import OptionManager
 
 NOQA_REGEX = re.compile(r"#[\s]*noqa:[\s]*[\D]+[\d]+")
 DICTIONARY_PATH = Path(__file__).parent
-
+LOCAL_WORDS_COMMENTS = ("spellchecker:words",)
 
 LintError = Tuple[int, int, str, Type["SpellCheckPlugin"]]
 Position = Tuple[int, int]
@@ -180,11 +180,9 @@ class SpellCheckPlugin:
             test_token = token.lower().strip("'").strip('"')
 
             if use_symbols:
-                # valid = (test_token in self.words) or (test_token in self.local_words)
-                valid = (test_token in self.words)
+                valid = (test_token in self.words) or (test_token in self.local_words)
             else:
-                # valid = (test_token in self.no_symbols) or (test_token in self.local_words)
-                valid = (test_token in self.no_symbols)
+                valid = (test_token in self.no_symbols) or (test_token in self.local_words)
 
             # Need a way of matching words without symbols
             if not valid and not is_number(token):
@@ -201,17 +199,17 @@ class SpellCheckPlugin:
         for token_info in file_tokens:
             yield from self._parse_token(token_info)
 
-    def _get_local_words(self, file_tokens: List[TokenInfo]) -> FrozenSet:
+    def _get_local_words(self, file_tokens: List[TokenInfo]) -> FrozenSet[str]:
         """Get files listed after comments # spellchecker:words."""
         local_words = set()
         for token_info in file_tokens:
             if (
                 token_info.type == tokenize.COMMENT
                 and token_info.string.lstrip("#").strip() != ""
-                and token_info.string.lstrip("#").split()[0] == "spellchecker:words"
+                and token_info.string.lstrip("#").split()[0] in LOCAL_WORDS_COMMENTS
             ):
                 local_words |= {w.lower() for w in token_info.string.lstrip("#").split()[1:]}
-        return FrozenSet(local_words)
+        return frozenset(local_words)
 
     def _is_valid_comment(self, token_info: tokenize.TokenInfo) -> bool:
         return (
