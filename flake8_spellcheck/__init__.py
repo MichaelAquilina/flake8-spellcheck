@@ -197,7 +197,7 @@ class SpellCheckPlugin:
 
     def run(self) -> Iterator[LintError]:
         file_tokens = list(self.file_tokens)  # we need to copy the iterator in a list
-        # self.local_words = self._get_local_words(file_tokens)
+        self.local_words = self._get_local_words(file_tokens)
         for token_info in file_tokens:
             yield from self._parse_token(token_info)
 
