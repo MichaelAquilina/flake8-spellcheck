@@ -7,3 +7,4 @@ hacky
 lineno
 parametrize
 tokenize
+unicodedata
