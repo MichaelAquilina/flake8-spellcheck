@@ -120,6 +120,7 @@ psycopg2
 py
 py2
 py3
+pylint
 pytest
 python2
 python3
