@@ -24,6 +24,7 @@ botocore
 builtins
 bytearray
 ceil
+chdir
 chmod
 chr
 classmethod
@@ -140,6 +141,7 @@ scandir
 setattr
 setdefault
 setuptools
+shlex
 shutil
 sizeof
 splitlines
@@ -149,6 +151,7 @@ str
 strftime
 strptime
 struct
+subcommand
 subprocess
 sys
 tarfile
@@ -158,6 +161,7 @@ timedelta
 traceback
 tzinfo
 tzname
+unittest
 urlencode
 urljoin
 urllib
