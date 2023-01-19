@@ -15,7 +15,7 @@ from flake8.options.manager import OptionManager
 
 NOQA_REGEX = re.compile(r"#[\s]*noqa:[\s]*[\D]+[\d]+")
 DICTIONARY_PATH = Path(__file__).parent
-
+LOCAL_WORDS_COMMENTS = ("spellchecker:words",)
 
 LintError = Tuple[int, int, str, Type["SpellCheckPlugin"]]
 Position = Tuple[int, int]
@@ -122,6 +122,7 @@ class SpellCheckPlugin:
             raise ValueError("Plugin requires file_tokens")
         else:
             self.file_tokens: Iterable[TokenInfo] = file_tokens
+        self.local_words: FrozenSet[str] = frozenset()
 
     @classmethod
     def load_dictionaries(cls, options: Namespace) -> Tuple[FrozenSet[str], FrozenSet[str]]:
@@ -185,9 +186,9 @@ class SpellCheckPlugin:
             test_token = token.lower().strip("'").strip('"')
 
             if use_symbols:
-                valid = test_token in self.words
+                valid = (test_token in self.words) or (test_token in self.local_words)
             else:
-                valid = test_token in self.no_symbols
+                valid = (test_token in self.no_symbols) or (test_token in self.local_words)
 
             # Need a way of matching words without symbols
             if not valid and not is_number(token):
@@ -199,8 +200,22 @@ class SpellCheckPlugin:
                 )
 
     def run(self) -> Iterator[LintError]:
-        for token_info in self.file_tokens:
+        file_tokens = list(self.file_tokens)  # we need to copy the iterator in a list
+        self.local_words = self._get_local_words(file_tokens)
+        for token_info in file_tokens:
             yield from self._parse_token(token_info)
+
+    def _get_local_words(self, file_tokens: List[TokenInfo]) -> FrozenSet[str]:
+        """Get files listed after comments # spellchecker:words."""
+        local_words = set()
+        for token_info in file_tokens:
+            if (
+                token_info.type == tokenize.COMMENT
+                and token_info.string.lstrip("#").strip() != ""
+                and token_info.string.lstrip("#").split()[0] in LOCAL_WORDS_COMMENTS
+            ):
+                local_words |= {w.lower() for w in token_info.string.lstrip("#").split()[1:]}
+        return frozenset(local_words)
 
     def _is_valid_comment(self, token_info: tokenize.TokenInfo) -> bool:
         return (
