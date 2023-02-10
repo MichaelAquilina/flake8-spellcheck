@@ -17,6 +17,7 @@ b64decode
 b64encode
 basename
 basestring
+binascii
 bool
 boto
 boto3
