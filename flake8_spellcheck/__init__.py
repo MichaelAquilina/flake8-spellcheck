@@ -140,6 +140,8 @@ class SpellCheckPlugin:
         # Hacky way of getting dictionary with symbols stripped
         no_symbols = set()
         for w in words:
+            if not (_w := w.strip()) or _w.startswith('#'):
+                continue
             if w.endswith("'s"):
                 no_symbols.add(w.replace("'s", ""))
             else:
