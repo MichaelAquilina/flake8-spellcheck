@@ -159,6 +159,7 @@ timedelta
 traceback
 tzinfo
 tzname
+unittest
 urlencode
 urljoin
 urllib
