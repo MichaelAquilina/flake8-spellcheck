@@ -28,7 +28,7 @@ flake8 configuration (e.g. your ``.flake8`` file):
 .. code-block:: ini
 
     [flake8]
-    dictionaries=en_US,python,technical,django
+    dictionaries = en_US,python,technical,django
 
 Enable pandas support
 ---------------------
@@ -39,8 +39,7 @@ flake8 configuration (e.g. your ``.flake8`` file):
 .. code-block:: ini
 
     [flake8]
-    dictionaries=en_US,python,technical,pandas
-
+    dictionaries = en_US,python,technical,pandas
 
 Specify Targets
 ---------------
@@ -51,16 +50,24 @@ You can specify what targets to spellcheck in your flake8 configuration (e.g. in
 .. code-block:: ini
 
    [flake8]
-   spellcheck-targets=comments
+   spellcheck-targets = comments
 
 The above configuration would only spellcheck comments
 
 .. code-block:: ini
 
    [flake8]
-   spellcheck-targets=names
+   spellcheck-targets = names
 
 The above configuration would only spellcheck names
+
+Ignore Rules
+------------
+
+.. code-block:: ini
+
+   [flake8]
+   ignore = SC100, SC200
 
 Contributing
 ------------

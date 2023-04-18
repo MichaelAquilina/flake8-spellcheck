@@ -35,7 +35,7 @@ jobs:
           name: Install requirements
           command: |
             apk update
-            apk add ruby=3.0.3-r0 go=1.17.4-r0 git=2.34.1-r0
+            apk add ruby go git
       - run:
           name: Install pre-commit
           command: pip install pre-commit==2.17.0
