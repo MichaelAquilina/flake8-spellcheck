@@ -6,7 +6,7 @@ authors = ["Michael Aquilina <michaelaquilina@gmail.com>"]
 license = "MIT"
 readme = "README.rst"
 homepage = "https://github.com/MichaelAquilina/flake8-spellcheck"
-repository = "https://github.cim/MichaelAquilina/flake8-spellcheck"
+repository = "https://github.com/MichaelAquilina/flake8-spellcheck"
 keywords = ["lint", "spellcheck", "flake8"]
 include = ["LICENSE"]
 
