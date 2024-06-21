@@ -151,6 +151,19 @@ class TestComments:
             "./example.py:1:14: E262 inline comment should start with '# '"
         ]
 
+    def test_spellchecker_words_addition_comment(self, flake8_path):
+        (flake8_path / "example.py").write_text(
+            dedent(
+                """
+                # spellchecker:words notinwhitelistfile
+                #
+                # notinwhitelistfile
+                """
+            )
+        )
+        result = flake8_path.run_flake8()
+        assert result.out_lines == []
+
     # Regression test for github.com/MichaelAquilina/flake8-spellcheck/issues/34
     def test_empty_comment(self, flake8_path):
         (flake8_path / "example.py").write_text(
