@@ -23514,6 +23514,7 @@ allowance's
 allowances
 allowed
 allowing
+allowlist
 allows
 alloy
 alloy's
@@ -45818,6 +45819,7 @@ denunciation's
 denunciations
 deny
 denying
+denylist
 deodorant
 deodorant's
 deodorants
