@@ -6,8 +6,8 @@ Flake8 Spellcheck
 
 Flake8 Plugin that spellchecks variables, functions, classes and other bits of your python code.
 
-You can create an allow-list for words that are specific to your project simply by adding them a ``.spellcheck-allowlist`` file
-in the root of your project directory. Each word you add  should be separated by a newline.
+You can create an allowlist for words that are specific to your project simply by adding them a ``.spellcheck-allowlist`` file
+in the root of your project directory. Each word you add should be separated by a newline.
 
 Spelling is assumed to be in en_US.
 
@@ -60,6 +60,34 @@ The above configuration would only spellcheck comments
    spellcheck-targets = names
 
 The above configuration would only spellcheck names
+
+Specify Allowlist
+---------------
+
+You can specify a list of allowed words - spellcheck will then not raise errors when those
+words are encountered. You can define the list of allowed words either as a file or as a
+configuration parameter.
+
+By default, spellcheck will try to load a `.spellcheck-allowlist` file in the root of your
+project. You can override the file name using the `--spellcheck-allowlist-file` CLI
+parameter, or in your flake8 configuration (e.g. in your ``.flake8`` file):
+
+.. code-block:: ini
+
+   [flake8]
+   spellcheck-allowlist-file = your-allowlist-file
+
+You can also define the allowlist directly using the `--spellcheck-allowlist` CLI parameter
+(this takes a comma-separated list of words to allow) or using the flake8 configuration
+(e.g. in your ``.flake8`` file):
+
+.. code-block:: ini
+
+   [flake8]
+   spellcheck-allowlist = ["your", "allowed", "words"]
+
+
+
 
 Ignore Rules
 ------------

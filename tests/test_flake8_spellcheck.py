@@ -126,7 +126,7 @@ class TestComments:
             ("""árvíztűrő tükörfúrógép""", "árvíztűrő,tükörfúrógép"),
         ],
     )
-    def test_pass_allowlist_param(self, flake8_path, comment_value, allowlist_value):
+    def test_pass_allowlist_parameter(self, flake8_path, comment_value, allowlist_value):
         (flake8_path / "example.py").write_text(
             dedent(
                 f"""
@@ -308,7 +308,7 @@ class TestFunctionDef:
             ("árvíztűrő_tükörfúrógép_function", "árvíztűrő,tükörfúrógép"),
         ],
     )
-    def test_pass_allowlist_param(self, flake8_path, function_name, allowlist_value):
+    def test_pass_allowlist_parameter(self, flake8_path, function_name, allowlist_value):
         (flake8_path / "example.py").write_text(
             dedent(
                 f"""
@@ -438,7 +438,7 @@ class TestName:
             ),
         ],
     )
-    def test_pass_allowlist_param(self, flake8_path, source_code, allowlist_value):
+    def test_pass_allowlist_parameter(self, flake8_path, source_code, allowlist_value):
         (flake8_path / "example.py").write_text(dedent(source_code))
         result = flake8_path.run_flake8([f"--spellcheck-allowlist={allowlist_value}"])
         assert result.exit_code == 0
@@ -538,7 +538,7 @@ class TestClassDef:
             ("ÁrvíztűrőTükörfúrógépClassName", "árvíztűrő,tükörfúrógép"),
         ],
     )
-    def test_pass_allowlist_param(self, flake8_path, class_name, allowlist_value):
+    def test_pass_allowlist_parameter(self, flake8_path, class_name, allowlist_value):
         (flake8_path / "example.py").write_text(
             dedent(
                 f"""
@@ -637,7 +637,7 @@ class TestLeadingUnderscore:
             ("_ÁrvíztűrőTükörfúrógépFunction", "árvíztűrő,tükörfúrógép"),
         ],
     )
-    def test_pass_allowlist_param(self, flake8_path, function_name, allowlist_value):
+    def test_pass_allowlist_parameter(self, flake8_path, function_name, allowlist_value):
         (flake8_path / "example.py").write_text(
             dedent(
                 f"""
