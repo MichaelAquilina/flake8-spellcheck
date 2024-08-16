@@ -6,7 +6,7 @@ Flake8 Spellcheck
 
 Flake8 Plugin that spellchecks variables, functions, classes and other bits of your python code.
 
-You can whitelist words that are specific to your project simply by adding them to ``whitelist.txt``
+You can create an allow-list for words that are specific to your project simply by adding them a ``.spellcheck-allowlist`` file
 in the root of your project directory. Each word you add  should be separated by a newline.
 
 Spelling is assumed to be in en_US.
@@ -89,6 +89,7 @@ Development
 -----------
 
 * Install `poetry <https://github.com/python-poetry>`__
+* Install `golang <https://go.dev/doc/install>`__ (required by some of our pre-commit hooks)
 * Run ``poetry install``
 * Run ``poetry run pre-commit install --install-hooks``
 
