@@ -84,7 +84,7 @@ You can also define the allowlist directly using the `--spellcheck-allowlist` CL
 .. code-block:: ini
 
    [flake8]
-   spellcheck-allowlist = ["your", "allowed", "words"]
+   spellcheck-allowlist = your, allowed, words
 
 
 
