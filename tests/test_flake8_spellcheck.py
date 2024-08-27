@@ -96,7 +96,7 @@ class TestComments:
         assert result.out_lines == expected_out_lines
 
     @pytest.mark.parametrize(
-        ["comment_value", "whitelist_value"],
+        ["comment_value", "allowlist_value"],
         [
             # For ASCII character test
             ("""don't "make" 'bad' comments""", ""),
@@ -104,7 +104,7 @@ class TestComments:
             ("""árvíztűrő tükörfúrógép""", "árvíztűrő\ntükörfúrógép"),
         ],
     )
-    def test_pass(self, flake8_path, comment_value, whitelist_value):
+    def test_pass_allowlist_file(self, flake8_path, comment_value, allowlist_value):
         (flake8_path / "example.py").write_text(
             dedent(
                 f"""
@@ -113,8 +113,29 @@ class TestComments:
                 """
             )
         )
-        (flake8_path / "whitelist.txt").write_text(whitelist_value)
+        (flake8_path / ".spellcheck-allowlist").write_text(allowlist_value)
         result = flake8_path.run_flake8()
+        assert result.out_lines == []
+
+    @pytest.mark.parametrize(
+        ["comment_value", "allowlist_value"],
+        [
+            # For ASCII character test
+            ("""don't "make" 'bad' comments""", ""),
+            # For unicode character test
+            ("""árvíztűrő tükörfúrógép""", "árvíztűrő,tükörfúrógép"),
+        ],
+    )
+    def test_pass_allowlist_parameter(self, flake8_path, comment_value, allowlist_value):
+        (flake8_path / "example.py").write_text(
+            dedent(
+                f"""
+                # {comment_value}
+                foo = "bar"
+                """
+            )
+        )
+        result = flake8_path.run_flake8([f"--spellcheck-allowlist={allowlist_value}"])
         assert result.out_lines == []
 
     @pytest.mark.parametrize(
@@ -256,7 +277,7 @@ class TestFunctionDef:
         assert result.out_lines == expected_out_lines
 
     @pytest.mark.parametrize(
-        ["function_name", "whitelist_value"],
+        ["function_name", "allowlist_value"],
         [
             # For ASCII character test
             ("misspelled_function", ""),
@@ -264,7 +285,7 @@ class TestFunctionDef:
             ("árvíztűrő_tükörfúrógép_function", "árvíztűrő\ntükörfúrógép"),
         ],
     )
-    def test_pass(self, flake8_path, function_name, whitelist_value):
+    def test_pass_allowlist_file(self, flake8_path, function_name, allowlist_value):
         (flake8_path / "example.py").write_text(
             dedent(
                 f"""
@@ -273,8 +294,30 @@ class TestFunctionDef:
                 """
             )
         )
-        (flake8_path / "whitelist.txt").write_text(whitelist_value)
+        (flake8_path / ".spellcheck-allowlist").write_text(allowlist_value)
         result = flake8_path.run_flake8()
+        assert result.exit_code == 0
+        assert result.out_lines == []
+
+    @pytest.mark.parametrize(
+        ["function_name", "allowlist_value"],
+        [
+            # For ASCII character test
+            ("misspelled_function", ""),
+            # For unicode character test
+            ("árvíztűrő_tükörfúrógép_function", "árvíztűrő,tükörfúrógép"),
+        ],
+    )
+    def test_pass_allowlist_parameter(self, flake8_path, function_name, allowlist_value):
+        (flake8_path / "example.py").write_text(
+            dedent(
+                f"""
+                def {function_name}(a, b, c):
+                    pass
+                """
+            )
+        )
+        result = flake8_path.run_flake8([f"--spellcheck-allowlist={allowlist_value}"])
         assert result.exit_code == 0
         assert result.out_lines == []
 
@@ -343,7 +386,7 @@ class TestName:
         assert result.out_lines == expected_out_lines
 
     @pytest.mark.parametrize(
-        ["source_code", "whitelist_value"],
+        ["source_code", "allowlist_value"],
         [
             # For ASCII character test
             (
@@ -365,10 +408,39 @@ class TestName:
             ),
         ],
     )
-    def test_pass(self, flake8_path, source_code, whitelist_value):
+    def test_pass_allowlist_file(self, flake8_path, source_code, allowlist_value):
         (flake8_path / "example.py").write_text(dedent(source_code))
-        (flake8_path / "whitelist.txt").write_text(whitelist_value)
+        (flake8_path / ".spellcheck-allowlist").write_text(allowlist_value)
         result = flake8_path.run_flake8()
+        assert result.exit_code == 0
+        assert result.out_lines == []
+
+    @pytest.mark.parametrize(
+        ["source_code", "allowlist_value"],
+        [
+            # For ASCII character test
+            (
+                """
+                my_variable_name = "something"
+                SOMETHING = "SOMETHING"
+                SOMETHING_ELSE = "SOMETHING"
+                """,
+                "",
+            ),
+            # For unicode character test
+            (
+                """
+                árvíztűrő_tükörfúrógép = "flood-resistant mirror drill"
+                ÁRVÍZTŰRŐ = "FLOOD-RESISTANT"
+                ÁRVÍZTŰRŐ_TÜKÖRFÚRÓGÉP = "FLOOD-RESISTANT MIRROR DRILL"
+                """,
+                "árvíztűrő,tükörfúrógép",
+            ),
+        ],
+    )
+    def test_pass_allowlist_parameter(self, flake8_path, source_code, allowlist_value):
+        (flake8_path / "example.py").write_text(dedent(source_code))
+        result = flake8_path.run_flake8([f"--spellcheck-allowlist={allowlist_value}"])
         assert result.exit_code == 0
         assert result.out_lines == []
 
@@ -436,7 +508,7 @@ class TestClassDef:
         assert result.out_lines == expected_out_lines
 
     @pytest.mark.parametrize(
-        ["class_name", "whitelist_value"],
+        ["class_name", "allowlist_value"],
         [
             # For ASCII character test
             ("FakeClassName", ""),
@@ -444,7 +516,7 @@ class TestClassDef:
             ("ÁrvíztűrőTükörfúrógépClassName", "árvíztűrő\ntükörfúrógép"),
         ],
     )
-    def test_pass(self, flake8_path, class_name, whitelist_value):
+    def test_pass_allowlist_file(self, flake8_path, class_name, allowlist_value):
         (flake8_path / "example.py").write_text(
             dedent(
                 f"""
@@ -453,8 +525,29 @@ class TestClassDef:
                 """
             )
         )
-        (flake8_path / "whitelist.txt").write_text(whitelist_value)
+        (flake8_path / ".spellcheck-allowlist").write_text(allowlist_value)
         result = flake8_path.run_flake8()
+        assert result.out_lines == []
+
+    @pytest.mark.parametrize(
+        ["class_name", "allowlist_value"],
+        [
+            # For ASCII character test
+            ("FakeClassName", ""),
+            # For unicode character test
+            ("ÁrvíztűrőTükörfúrógépClassName", "árvíztűrő,tükörfúrógép"),
+        ],
+    )
+    def test_pass_allowlist_parameter(self, flake8_path, class_name, allowlist_value):
+        (flake8_path / "example.py").write_text(
+            dedent(
+                f"""
+                class {class_name}:
+                    pass
+                """
+            )
+        )
+        result = flake8_path.run_flake8([f"--spellcheck-allowlist={allowlist_value}"])
         assert result.out_lines == []
 
     @pytest.mark.parametrize(
@@ -513,7 +606,7 @@ class TestLeadingUnderscore:
         assert result.out_lines == expected_out_lines
 
     @pytest.mark.parametrize(
-        ["function_name", "whitelist_value"],
+        ["function_name", "allowlist_value"],
         [
             # For ASCII character test
             ("_doSomething", ""),
@@ -521,7 +614,7 @@ class TestLeadingUnderscore:
             ("_ÁrvíztűrőTükörfúrógépFunction", "árvíztűrő\ntükörfúrógép"),
         ],
     )
-    def test_pass(self, flake8_path, function_name, whitelist_value):
+    def test_pass_allowlist_file(self, flake8_path, function_name, allowlist_value):
         (flake8_path / "example.py").write_text(
             dedent(
                 f"""
@@ -530,8 +623,30 @@ class TestLeadingUnderscore:
                 """
             )
         )
-        (flake8_path / "whitelist.txt").write_text(whitelist_value)
+        (flake8_path / ".spellcheck-allowlist").write_text(allowlist_value)
         result = flake8_path.run_flake8()
+        assert result.exit_code == 0
+        assert result.out_lines == []
+
+    @pytest.mark.parametrize(
+        ["function_name", "allowlist_value"],
+        [
+            # For ASCII character test
+            ("_doSomething", ""),
+            # For unicode character test
+            ("_ÁrvíztűrőTükörfúrógépFunction", "árvíztűrő,tükörfúrógép"),
+        ],
+    )
+    def test_pass_allowlist_parameter(self, flake8_path, function_name, allowlist_value):
+        (flake8_path / "example.py").write_text(
+            dedent(
+                f"""
+                def {function_name}(s):
+                    pass
+                """
+            )
+        )
+        result = flake8_path.run_flake8([f"--spellcheck-allowlist={allowlist_value}"])
         assert result.exit_code == 0
         assert result.out_lines == []
 

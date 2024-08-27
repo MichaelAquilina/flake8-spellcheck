@@ -131,11 +131,15 @@ class SpellCheckPlugin:
             data = dictionary_path.read_text()
             words |= {w.lower() for w in data.split("\n")}
 
-        if os.path.exists(options.whitelist):
-            with open(options.whitelist) as fp:
-                whitelist = fp.read()
-            whitelist_data = {w.lower() for w in whitelist.split("\n")}
-            words |= whitelist_data
+        if os.path.exists(options.spellcheck_allowlist_file):
+            with open(options.spellcheck_allowlist_file) as fp:
+                allowlist = fp.read()
+            allowlist_data_from_file = {w.lower() for w in allowlist.split("\n")}
+            words |= allowlist_data_from_file
+
+        if options.spellcheck_allowlist is not None:
+            allowlist_data = {w.lower() for w in options.spellcheck_allowlist}
+            words |= allowlist_data
 
         # Hacky way of getting dictionary with symbols stripped
         no_symbols = set()
@@ -149,16 +153,23 @@ class SpellCheckPlugin:
     @classmethod
     def add_options(cls, parser: OptionManager) -> None:
         parser.add_option(
-            "--whitelist",
-            help="Path to text file containing whitelisted words",
-            default="whitelist.txt",
+            "--spellcheck-allowlist-file",
+            help="Path to text file containing allowed words",
+            default=".spellcheck-allowlist",
+            parse_from_config=True,
+        )
+        parser.add_option(
+            "--spellcheck-allowlist",
+            help="Comma separated list of words to allow",
+            default=None,
+            comma_separated_list=True,
             parse_from_config=True,
         )
         parser.add_option(
             "--dictionaries",
             # Unfortunately optparse does not support nargs="+" so we
             # need to use a command separated list to work round it
-            help="Command separated list of dictionaries to enable",
+            help="Comma separated list of dictionaries to enable",
             default="en_US,python,technical",
             comma_separated_list=True,
             parse_from_config=True,
