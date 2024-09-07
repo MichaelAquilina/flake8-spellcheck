@@ -21,6 +21,7 @@ bool
 boto
 boto3
 botocore
+breakpoint
 builtins
 bytearray
 ceil
